@@ -1,0 +1,10 @@
+@namespace list
+
+@forward Nil()
+@forward head(list)
+@forward tail(list)
+@forward r_<::(head, tail)
+@forward i_append(list, elem)
+@forward mklist(len, generator)
+@forward i_until(a, b)
+@forward i_to(a, b)

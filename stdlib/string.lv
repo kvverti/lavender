@@ -1,0 +1,37 @@
+@import "string.lvh"
+@import "global.lvh"
+
+@namespace string
+
+(def i_substring(self, start, end)
+    => "" ; start = end
+    => [self](start) + self substring (start + 1, end) ; rest
+)
+
+(def _findFirstIdx(self, str, i)
+    => -1 ; i >= size(self)
+    => i ; [self](i) = [str](0)
+    => _findFirstIdx(self, str, i + 1) ; rest
+)
+
+(def _findFromOffset(self, str, off)
+    => -1 ; off < 0
+    => [def comp(i)
+        => off ; i >= size(str)
+        => -1 ; i >= size(self)
+        => -1 ; [self](i + off) != [str](i)
+        => comp(i + 1) ; rest
+    ](1) ; rest
+)
+
+(def i_find(self, str)
+    => 0 ; str = ""
+    => [def impl(off) =>
+        [def(x)
+            => x ; x >= 0
+            => -1 ; off < 0
+            => impl(_findFirstIdx(self, str, off + 1)) ; rest
+        ](_findFromOffset(self, str, off))
+    ](_findFirstIdx(self, str, 0)) ; rest
+)
+    

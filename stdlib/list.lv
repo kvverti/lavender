@@ -1,0 +1,65 @@
+@import "global.lvh"
+@import "list.lvh"
+@namespace list
+
+(def r_<::(head, tail) =>
+    (def node(i)
+        => head ; i = 0
+        => [tail](i - 1) ; i > 0
+        => head ; i = \list:head
+        => tail ; i = \list:tail
+        => (def(elem)
+            => true ; head = elem
+            => elem in tail ; rest
+        ) ; i = \in\
+        => (def(func) => [func](head) <:: (tail map func)) ; i = \map\
+        => (def(func) => [func](head) ++ (tail flatmap func)) ; i = \flatmap\
+        => (def(func)
+            => head <:: (tail filter func) ; [func](head)
+            => tail filter func ; rest) ; i = \filter\
+        => (def(accum, func) => tail reduce ([func](accum, head), func)) ; i = \reduce\
+        => (def(list2) => head <:: (tail ++ list2)) ; i = \++\
+        => (def(list2)
+            => Nil ; list2 = Nil
+            => pair(head, list:head(list2)) <:: (tail zip list:tail(list2)) ; rest
+        ) ; i = \zip\
+        => (def(n)
+            => Nil ; n = 0
+            => head <:: (tail take (n - 1)) ; rest
+        ) ; i = \take\
+        => \node ; i = \toList
+        => 1 + [tail](i) ; i = \size
+        => "[ " + (\node reduce ("", def(a, b) => a + str(b) + " ")) + "]" ; i = \str
+    )
+)
+
+(def Nil() =>
+    (def value(i)
+        => 0 ; i = \size
+        => def(elem) => false ; i = \in\
+        => (def(func) => Nil) ; i = \map\
+        => (def(func) => Nil) ; i = \flatmap\
+        => (def(func) => Nil) ; i = \filter\
+        => (def(identity, func) => identity) ; i = \reduce\
+        => (def(struct2) => Nil) ; i = \zip\
+        => (def(struct2) => struct2) ; i = \++\
+        => (def(n) => Nil) ; i = \take\
+        => Nil ; i = \toList
+        => "[]" ; i = \str
+    )
+)
+
+def head(list) => [list](\head)
+def tail(list) => [list](\tail)
+    
+def i_append(list, elem) => list ++ (elem <:: Nil)
+
+(def mklist(len, gen) =>
+    [def impl(i)
+        => Nil ; i >= len
+        => [gen](i) <:: impl(i + 1) ; i < len
+    ](0)
+)
+    
+def i_until(a, b) => mklist(b - a, def(x) => a + x)
+def i_to(a, b) => a until (b + 1)

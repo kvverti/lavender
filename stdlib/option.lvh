@@ -1,0 +1,6 @@
+@namespace option
+
+@forward None()
+@forward Some(value)
+@forward Option(value)
+@forward i_get(self)

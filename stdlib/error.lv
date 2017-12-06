@@ -1,0 +1,65 @@
+@import "global.lvh"
+@import "error.lvh"
+
+@namespace error
+
+(def Error(type, info) =>
+    (def obj(i)
+        => (def(other) => false) ; i = \=\
+        => type ; i = \type
+        => info ; i = \info
+        => str(type) + " : " + str(info) ; i = \str
+    )
+)
+
+def type(error) => [error](\type)
+def info(error) => [error](\info)
+
+(def BadArgument(info) =>
+    (def obj(i)
+        => Error(\BadArgument, info) ; i = \prototype
+        => [prototype(\obj)](i) ; rest
+    )
+)
+
+(def BadIndex(info) =>
+    (def obj(i)
+        => Error(\BadIndex, info) ; i = \prototype
+        => [prototype(\obj)](i) ; rest
+    )
+)
+
+(def _Failure(expr) =>
+    (def obj(i)
+        => expr ; i = \get\
+        => true ; i = \failed
+        => (def(func) => \obj) ; i = \map\
+        => (def(func) => \obj) ; i = \flatmap\
+        => (def(func) => \obj) ; i = \filter\
+        => (def(accum, func) => accum) ; i = \reduce\
+        => (def(=> default) => default) ; i = \orElse\
+    )
+)
+
+(def _Success(expr) =>
+    (def obj(i)
+        => expr ; i = \get\
+        => false ; i = \failed
+        => (def(func) => Try([func](expr))) ; i = \map\
+        => (def(func) => [func](expr)) ; i = \flatmap\
+        => (def(func) =>
+            \obj if [func](expr)
+            else _Failure(BadArgument("Bad predicate"))) ; i = \filter\
+        => (def(accum, func) => [func](accum, expr)) ; i = \reduce\
+        => (def(=> default) => expr) ; i = \orElse\
+    )
+)
+
+(def Try(expr)
+    => _Failure(expr) ; isNaN(expr)
+    => _Success(expr) ; rest
+)
+
+def i_get(self) => [self](\get\)
+def i_orElse(self, => default) => [[self](\orElse\)](default)
+def failed(try) => [try](\failed)

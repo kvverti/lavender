@@ -1,0 +1,46 @@
+@import "global.lvh"
+@namespace global
+
+def NaN() => 0 ; 0
+def isNaN(x) => x != x
+def Inf() => 1 / 0
+def true() => 1
+def false() => 0
+def rest() => 1
+def bool(a) => !(!a)
+def i_//(a, b) => int(a / b)
+def i_if(=> expr, cond) => expr ; cond
+(def i_else(expr, => fall)
+    => fall ; isNaN(expr)
+    => expr ; rest
+)
+(def i_&&(a, => b)
+    => bool(b) ; a
+    => false ; rest
+)
+(def i_||(a, => b)
+    => true ; a
+    => bool(b) ; rest
+)
+def size(struct) => [struct](\size)
+def i_in(elem, struct) => [[struct](\in\)](elem)
+def i_map(struct, func) => [[struct](\map\)](func)
+def i_flatmap(struct, func) => [[struct](\flatmap\)](func)
+def i_filter(struct, func) => [[struct](\filter\)](func)
+def i_reduce(struct, identity, func) => [[struct](\reduce\)](identity, func)
+def i_sum(struct) => struct reduce (0, \+\)
+def i_zip(struct1, struct2) => [[struct1](\zip\)](struct2)
+def i_++(struct1, struct2) => [[struct1](\++\)](struct2)
+def i_take(struct, n) => [[struct](\take\)](n)
+def toList(struct) => [struct](\toList)
+def flip(binaryop) => def(a, b) => [binaryop](b, a)
+(def pair(a, b) =>
+    (def obj(i)
+        => a ; i = 0
+        => b ; i = 1
+        => 2 ; i = \size
+        => "(" + str(a) + ", " + str(b) + ")" ; i = \str
+    )
+)
+def i_->(a, b) => pair(a, b)
+def prototype(obj) => [obj](\prototype)

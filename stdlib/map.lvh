@@ -1,0 +1,6 @@
+@namespace map
+
+@forward empty()
+@forward fromList(pair_list)
+@forward i_insert(map, key, val)
+@forward i_find(map, key)

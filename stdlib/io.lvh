@@ -1,0 +1,24 @@
+@namespace io
+
+' Built in IO functions
+@forward stdout()
+@forward stdin()
+@forward print(file, value)
+@forward getc(file)
+@forward gets(file, len)
+@forward open(filename, args)
+@forward close(file)
+
+@forward Stdout()
+@forward Stdin()
+
+@forward i_write(out, value)
+@forward i_endl(out)
+@forward i_read(in)
+@forward i_readstr(in)
+@forward i_readnext(len)
+@forward i_lines(in)
+@forward i_tokens(in, delimiter)
+
+@forward with(file)
+@forward i_do(file, code)

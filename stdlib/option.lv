@@ -1,0 +1,32 @@
+@import "global.lvh"
+@import "option.lvh"
+
+@namespace option
+
+(def Some(value) =>
+    (def obj(i)
+        => value ; i = \get\
+        => (def(func) => Option([func](value))) ; i = \map\
+        => (def(func) => [func](value)) ; i = \flatmap\
+        => (def(func) => \obj if [func](value) else None) ; i = \filter\
+        => (def(accum, func) => [func](accum, value)) ; i = \reduce\
+        => 1 ; i = \size
+    )
+)
+
+(def None() =>
+    (def value(i)
+        => (def(func) => None) ; i = \map\
+        => (def(func) => None) ; i = \flatmap\
+        => (def(func) => None) ; i = \filter\
+        => (def(accum, func) => accum) ; i = \reduce\
+        => 0 ; i = \size
+    )
+)
+
+(def Option(value)
+    => None ; isNaN(value)
+    => Some(value) ; rest
+)
+
+def i_get(self) => [self](\get\)

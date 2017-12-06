@@ -1,0 +1,43 @@
+@import "io.lvh"
+@import "global.lvh"
+@import "option.lvh"
+
+@namespace io
+
+@using option:Option
+
+def i_finally(a, b) => a
+def space(c) => c = " " || c = "\n" || c = "\t"
+(def skipws(file) =>
+    [def impl(c)
+        => c ; !space(c)
+        => impl(getc(file)) ; rest
+    ](getc(file))
+)
+
+(def _File(file) =>
+    (def obj(i)
+        => (def(value) => \obj finally print(file, value)) ; i = \write\
+        => Option(getc(file)) ; i = \read\
+        => Option(skipws(file) +
+            [def readstrImpl(c)
+            => "" ; c != c || space(c)
+            => c + readstrImpl(getc(file)) ; rest
+        ](getc(file))) ; i = \readstr\
+        => (def(len) => gets(file, len)) ; i = \readnext\
+    )
+)
+
+def Stdout() => _File(stdout)
+def Stdin() => _File(stdin)
+
+def i_write(out, value) => [[out](\write\)](value)
+def i_endl(out) => [[out](\write\)]("\n")
+def i_read(in) => [in](\read\)
+def i_readstr(in) => [in](\readstr\)
+def i_readnext(in, len) => [[in](\readnext\)](len)
+def i_lines(in) => [in](\lines\)
+def i_tokens(in, delimiter) => [[in](\tokens\)](delimiter)
+
+def with(file) => file
+def i_do(file, code) => [code](_File(file)) finally (close(file))

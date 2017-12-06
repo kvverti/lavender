@@ -1,0 +1,13 @@
+@namespace error
+
+@forward Error(type, info)
+@forward type(error)
+@forward info(error)
+
+@forward BadArgument(info)
+@forward BadIndex(info)
+
+@forward Try(expr)
+@forward failed(try)
+@forward i_get(self)
+@forward i_orElse(self, => default)

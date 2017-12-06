@@ -1,0 +1,42 @@
+@import "global.lvh"
+@import "list.lvh"
+@import "option.lvh"
+@import "map.lvh"
+
+@namespace map
+
+' Map implementation, as a binary search tree. Keys must be mutually comparable.
+(def _map(elem, left, right) =>
+    (def node(i)
+        ' Find. Returns some(value) if the key was found,
+        ' returns none otherwise.
+        => (def(key)
+            => left find key ; key < [elem](0)
+            => right find key ; key > [elem](0)
+            => option:Some([elem](1)) ; key = [elem](0)
+        ) ; i = \find\
+        ' Insert. If the key is in the map, replaces its corresponding
+        ' value with the given value. Else, adds the key and value to
+        ' the map.
+        => (def(key, val)
+            => _map(elem, left insert (key, val), right) ; key < [elem](0)
+            => _map(elem, left, right insert (key, val)) ; key > [elem](0)
+            => _map(key -> val, left, right) ; key = [elem](0)
+        ) ; i = \insert\
+    )
+)
+
+(def empty() =>
+    (def value(i)
+        => (def(key) => option:None) ; i = \find\
+        => (def(key, val) => _map(key -> val, empty, empty)) ; i = \insert\
+    )
+)
+
+(def fromList(pair_list)
+    => empty ; pair_list = list:Nil
+    => fromList(list:tail(pair_list)) insert ([list:head(pair_list)](0), [list:head(pair_list)](1)) ; rest
+)
+
+def i_insert(map, key, val) => [[map](\insert\)](key, val)
+def i_find(map, key) => [[map](\find\)](key)

@@ -1,0 +1,4 @@
+@namespace string
+
+@forward i_substring(self, start, end)
+@forward i_find(self, str)
