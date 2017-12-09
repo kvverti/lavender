@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>Lavender Documentation</title>
+    <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+    <iframe id="header-frame" src="header.html"></iframe>
+    <div id="content">
+        <h1>Lavender Syntax</h1>
+        <p>
+            Lavender programs are composed of a sequence of expressions. Expressions may span multiple lines if they are enclosed in parentheses, otherwise the expression ends at the next newline character. Examples of expressions include the following.
+            <span class="code">
+                3 + 5<br/>
+                "Hello world"<br/>
+                def(x) => x + 1<br/>
+                sin(2 * pi)
+            </span>
+        </p>
+        <h2>Comments</h2>
+        <p>
+            Comments begin with a single quote character and continue until the end of the line. There are no multiline comments.
+        </p>
+        <h2>Literals</h2>
+        <p>
+            Lavender contains two types of literal values: numbers and strings. Numbers are double precision floating point values, and strings are Unicode character sequences. Strings are always delimited by double quote marks. Strings may contain escape sequences beginning with the backslash character.
+        </p>
+        <table>
+            <tr>
+                <th>Escape Sequence</th>
+                <th>Meaning</th>
+            </tr>
+            <tr>
+                <td><code>\n</code></td>
+                <td>Newline</td>
+            </tr>
+            <tr>
+                <td><code>\t</code></td>
+                <td>Tab</td>
+            </tr>
+            <tr>
+                <td><code>\"</code></td>
+                <td>Double quote</td>
+            </tr>
+            <tr>
+                <td><code>\'</code></td>
+                <td>Single quote</td>
+            </tr>
+            <tr>
+                <td><code>\\</code></td>
+                <td>Backslash</td>
+            </tr>
+        </table>
+        <h2>Function expressions</h2>
+        <p>
+            Function expressions define functions. Functions are defined using the following syntax.
+            <span class="code">
+                def <i>[name]</i> ( <i>[params]</i> ) => <i>&lt;expression&gt;</i>
+            </span>
+            A function's name is optional. If left out, the function is an anonymous function. The function's parameter list may contain zero or more parameters spearated by commas. As Lavender is untyped, the parameters are given names only. Some examples of function definitions below.
+            <span class="code">
+                def Inf() => 1 / 0<br/>
+                def true() => 1<br/>
+                def log2(x) => log(x) / log(2)<br/>
+                def isTrue(x) => x = true
+            </span>
+            Note that parentheses are not used when using a function that takes no parameters.
+        </p>
+        <h3>Names</h3>
+        <p>
+            Functions introduce names into scope. If the function has a name, that name may be used to refer to the function. Within the function body, function parameter names shadow other names. Names may be either alphanumeric or symbolic. Alphanumeric names begin with a letter or underscore followed by zero or more letters or numbers. Symbolic names are made up of the following symbols: <code>? ~ * / % + - &lt; &gt; = ! &amp; ^ | :</code>, but may not begin with an underscore. Additionally, names may not be either of the two keywords <code>def</code> or <code>=&gt;</code>.
+        </p>
+        <table>
+            <tr>
+                <th>Legal Names</th>
+                <th>Illegal Names</th>
+            </tr>
+            <tr>
+                <td><code>hello_world</code></td>
+                <td><code>::</code></td>
+            </tr>
+            <tr>
+                <td><code>Lavender</code></td>
+                <td><code>3scary5me</code></td>
+            </tr>
+            <tr>
+                <td><code>_impl</code></td>
+                <td><code>def</code></td>
+            </tr>
+            <tr>
+                <td><code>&lt;::</code></td>
+                <td><code>bar_=</code></td>
+            </tr>
+        </table>
+        <h3>Fixing and Asscoiativity</h3>
+        <p>
+            If a function takes parameters, it may be either prefix or infix. When calling a function, prefix functions are always placed before their parameters, while infix functions are placed after their first parameter. To make a function infix, start its name with <code>i_</code>. Functions are prefix by default, but this can be specified explicitly by using the prefix <code>u_</code>.
+            <pre class="code">
+&gt; def plus(x, y) => x + y        ' Same as: def u_plus(x, y) => x + y
+global:plus
+&gt; def i_minus(x, y) => x - y
+global:minus
+&gt; plus(3, 2)
+5.0
+&gt; 5 minus 3
+2.0
+&gt; (5, 3) minus
+2.0</pre>
+            Note that infix functions do not need to be placed directly after their first parameter, though it is customary to do so. Prefix and infix functions may also be overloaded (<code>func</code> and <code>i_func</code> are different functions), but this practice is discouraged.
+        </p>
+        <p>
+            Infix functions additionally may be either left or right associative. For example, multiplication is left associative while exponentiation is right associative.
+            <span class="code">
+                2 * 3 * 4 = (2 * 3) * 4<br/>
+                2 ** 3 ** 4 = 2 ** (3 ** 4)
+            </span>
+            To make a function right associative, prefix the name with <code>r_</code>. Since only infix functions can be right associative, <code>i_</code> does not need to be specified for right associative functions.
+        </p>
+        <h3>Precedence</h3>
+        <p>
+            Infix functions have a precedence based on the first character of their names. This ordering is similar to the ordering used in the Scala language.
+        </p>
+        Precedence from greatest to least
+        <ul>
+            <li><code>? ~</code></li>
+            <li><code>**</code></li>
+            <li><code>* / %</code></li>
+            <li><code>+ -</code></li>
+            <li><code>&lt; &gt;</code></li>
+            <li><code>= !</code></li>
+            <li><code>&amp;</code></li>
+            <li><code>^</code></li>
+            <li><code>|</code></li>
+            <li><code>All letters</code></li>
+        </ul>
+        <h2>Nested Functions</h2>
+        <p>
+            Functions may be nested in other expressions. In addition to their own parameters, nested functions capture any paremeters declared in enclosing functions. Functions defined inside other functions are only accessible within the outer function, whereas "top-level" functions may be accessed anywhere.
+            <pre class="code">
+&gt; def f1(x) => x + 1                         ' Define function f1
+global:f1
+&gt; f1(12)                                     ' Call f1
+13.0
+&gt; def f2(x) => (def inner(i) => x + i)       ' Define f2 with a nested function inner
+global:f2
+&gt; f2(2)
+global$f2:inner[2.0]                         ' Returns the inner function
+&gt; inner(3)
+Unqualified name not found: inner            ' Nested function not accessible</pre>
+        </p>
+        <h2>Calling Values as Functions</h2>
+        <p>
+            Sometimes it may be necessary to use a value as a function. Often the value in question is the result of another function, or a parameter to a function. Square bracket notation allows one to use values as functions.
+            <pre class="code">
+&gt; def f(x) => (def(i) => x + i)
+global:f
+&gt; f(1)                       ' Returns the nested function
+global$f:anon$1[1.0]
+&gt; [f(1)](2)                  ' Square bracket notation
+3.0</pre>
+            Some real-world examples are the standard library map and reduce functions. These functions are known as <em>forwarding functions</em>. They exist only to forward their arguments.
+            <span class="code">
+                def i_map(obj, func) => [[obj](\map\)](func)<br/>
+                def i_reduce(obj, identity, func) => [[obj](\reduce\)](identity, func)
+            </span>
+        </p>
+    </div>
+    <iframe id="footer-frame" src="footer.html"></iframe>
+</body>
+</html>

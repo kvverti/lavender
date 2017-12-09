@@ -1,0 +1,45 @@
+
+body {
+    margin: 0;
+    font-size: 16px;
+}
+
+#header-frame {
+    width: 15%;
+    height: 20em;
+    border: none;
+    padding: 1em;
+    position: fixed;
+}
+
+#footer-frame {
+    width: 100%;
+    border: none;
+    border-top: 2px solid black;
+}
+
+#content {
+    display: inline-block;
+    vertical-align: top;
+    border-left: 2px solid black;
+    margin-left: calc(15% + 2em); /* Width of header */
+    padding: 1em;
+    min-height: 21em;
+    width: calc(85% - 4em - 5px);
+}
+
+.code {
+    display: block;
+    font-family: monospace;
+    color: white;
+    background-color: black;
+    border: 2px solid silver;
+    padding: 1em;
+    margin-bottom: 1em;
+    margin-top: 1em;
+    overflow-x: auto;
+}
+
+code {
+    font-family: monospace;
+}

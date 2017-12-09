@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>Lavender Documentation</title>
+    <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+    <iframe id="header-frame" src="header.html"></iframe>
+    <div id="content">
+        <h1>Lavender</h1>
+        <p>
+            Lavender is an interpreted, pure functional REPL-based programming language.
+        </p>
+        <h2>Running Lavender</h2>
+        <p>
+            Running Lavender requires Java to be installed. The following command will compile the Lavender runtime on your machine.
+            <span class="code">$ javac @compile.txt</span>
+            After compiling, you can run Lavender right away. A default shell file is provided that runs Lavender with simple default arguments. You should see something like the following.
+            <span class="code">
+                $ ./basic_start.sh<br/>
+                Lavender runtime v. 1.0 by Chris Nero<br/>
+                Open source at https://github.com/kvverti/lavender<br/>
+                Enter function definitions or expressions<br/>
+                &gt;
+            </span>
+            The Lavender runtime can also take command line arguments. There are two command line arguments.
+        </p>
+        <table>
+            <tr>
+                <td><code>-fp &lt;filepath&gt;</code></td>
+                <td>Specifies the directory where Lavender source files may be found.</td>
+            </tr>
+            <tr>
+                <td><code>-debug</code></td>
+                <td>Runs Lavender in debug mode. In debug mode, extra information from the interpreter is printed to the output.</td>
+            </tr>
+        </table>
+        <p>
+            For example, <code>basic_start.sh</code> is equivalent to running the following.
+            <span class="code">
+                $ ./start.sh -fp stdlib
+            </span>
+        </p>
+    </div>
+    <iframe id="footer-frame" src="footer.html"></iframe>
+</body>
+</html>
