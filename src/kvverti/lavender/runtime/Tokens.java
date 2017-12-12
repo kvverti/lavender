@@ -61,7 +61,7 @@ public class Tokens {
     static {
         
         final String id = "[A-Za-z_][A-Za-z_0-9]*";
-        final String sym = "[~!%\\^\\&*\\-+=|<>/?,][~!%\\^\\&*\\-+=|<>/?,:]*";
+        final String sym = "[~!%\\^\\&*\\-+=|<>/?][~!%\\^\\&*\\-+=|<>/?:]*";
         final String qualId = "((?:" + id + ")?):(" + id + ")";
         final String qualSym = "((?:" + id + ")?):(" + sym + ")";
         WS = Pattern.compile("\\s+");

@@ -15,12 +15,12 @@ def i_if(=> expr, cond) => expr ; cond
     => expr ; rest
 )
 (def i_&&(a, => b)
-    => bool(b) ; a
-    => false ; rest
+    => b ; a
+    => a ; rest
 )
 (def i_||(a, => b)
-    => true ; a
-    => bool(b) ; rest
+    => a ; a
+    => b ; rest
 )
 def size(struct) => [struct](\size)
 def i_in(elem, struct) => [[struct](\in\)](elem)

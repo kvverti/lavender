@@ -10,6 +10,7 @@ public class Builtin {
     public static final Operator RIGHT_PAREN = new Operator(")", 1, 1, Operator.NA){};
     public static final Operator LEFT_BRACKET = new Operator("[", 1, 1, Operator.NA){};
     public static final Operator RIGHT_BRACKET = new Operator("]", 1, 1, Operator.NA){};
+    public static final Operator COMMA = new Operator(":,", 1, 1, Operator.LEFT_INFIX){};
     
     //"function call" operator
     public static final Operator CALL;

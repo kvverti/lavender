@@ -4,9 +4,6 @@ import kvverti.lavender.Stack;
     
 public class Logic {
     
-    //separator
-    public static final Operator COMMA = new Operator(":,", 2, 2, Operator.LEFT_INFIX){};
-    
     //mathematical operations
     public static final Operator PI = Constant.of(Math.PI);
     public static final Operator E = Constant.of(Math.E);

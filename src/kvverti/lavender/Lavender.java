@@ -1,12 +1,22 @@
 package kvverti.lavender;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.FileInputStream;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.function.BiFunction;
 
 import kvverti.lavender.operators.Operator;
+import kvverti.lavender.operators.Logic;
+import kvverti.lavender.operators.Io;
+import kvverti.lavender.operators.FileObj;
 import kvverti.lavender.runtime.Interpreter;
+import kvverti.lavender.runtime.FunctionDecl;
 
 /**
  * The execution environment for the Lavender runtime.
@@ -19,6 +29,7 @@ public class Lavender extends Thread {
     private final String filepath;
     private final Map<String, Operator> functions;
     private final Map<String, Operator> operators;
+    private final Interpreter intr;
     
     public static class Args {
         
@@ -49,6 +60,47 @@ public class Lavender extends Thread {
         filepath = args.filepath();
         functions = new HashMap<>();
         operators = new HashMap<>();
+        intr = new Interpreter(this);
+        //builtin infix functions
+        operators.put(":**", Logic.POWER);
+        operators.put(":*", Logic.TIMES);
+        operators.put(":/", Logic.DIVIDE);
+        operators.put(":%", Logic.REMAINDER);
+        operators.put(":+", Logic.PLUS);
+        operators.put(":-", Logic.MINUS);
+        operators.put(":&", Logic.AND);
+        operators.put(":|", Logic.OR);
+        operators.put(":^", Logic.XOR);
+        operators.put(":=", Logic.EQ);
+        operators.put(":!=", Logic.NE);
+        operators.put(":>", Logic.GT);
+        operators.put(":<", Logic.LT);
+        operators.put(":>=", Logic.GE);
+        operators.put(":<=", Logic.LE);
+        //builtin prefix functions and values
+        functions.put(":abs", Logic.ABS);
+        functions.put(":sin", Logic.SIN);
+        functions.put(":cos", Logic.COS);
+        functions.put(":pi", Logic.PI);
+        functions.put(":e", Logic.E);
+        functions.put(":log", Logic.LOG);
+        functions.put(":ceil", Logic.CEIL);
+        functions.put(":floor", Logic.FLOOR);
+        functions.put(":int", Logic.INT);
+        functions.put(":max", Logic.MAX);
+        functions.put(":min", Logic.MIN);
+        functions.put(":str", Logic.STR);
+        functions.put(":num", Logic.NUM);
+        functions.put(":+", Logic.UPLUS);
+        functions.put(":-", Logic.UMINUS);
+        functions.put(":!", Logic.NOT);
+        functions.put("io:print", Io.PRINT);
+        functions.put("io:getc", Io.GETC);
+        functions.put("io:close", Io.CLOSE);
+        functions.put("io:open", Io.OPEN);
+        functions.put("io:gets", Io.GETS);
+        functions.put("io:stdin", new FileObj(true));
+        functions.put("io:stdout", new FileObj(false));
     }
     
     public boolean debug() { return debug; }
@@ -63,27 +115,77 @@ public class Lavender extends Thread {
     
     public void loadFile(String file) {
         
-        throw new AbstractMethodError();
+        File f = new File(filepath + "/" + file);
+        try(InputStream input = new FileInputStream(f)) {
+            intr.parseInput(input);
+        } catch(IOException e) {
+            System.err.println("Could not open file: " + file);
+        }
     }
     
-    public void resolveAll() {
+    public void link() {
      
         BiFunction<String, Operator, Operator> resolve = (k, v) -> v.resolve();
         functions.replaceAll(resolve);
         operators.replaceAll(resolve);
     }
     
-    public Map<String, Operator> getFunctionsInNamespace(String namespace) {
+    public List<String> getNamesInNamespace(String namespace) {
         
-        throw new AbstractMethodError();
+        List<String> res = new ArrayList<>();
+        for(String name : functions.keySet()) {
+            String[] split = name.split(":", 2);
+            assert split.length == 2 : split.length;
+            if(split[0].equals(namespace))
+                res.add(split[1]);
+        }
+        for(String name : operators.keySet()) {
+            String[] split = name.split(":", 2);
+            assert split.length == 2 : split.length;
+            if(split[0].equals(namespace))
+                res.add(split[1]);
+        }
+        return res;
+    }
+    
+    public Operator getPrefixFunction(String name) {
+        
+        return functions.get(name);
+    }
+    
+    public Operator getInfixFunction(String name) {
+        
+        return operators.get(name);
+    }
+    
+    public boolean addPrefixFunction(String name, Operator function) {
+        
+        Operator op = functions.get(name);
+        if(op == null || op instanceof FunctionDecl) {
+            functions.put(name, function);
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean addInfixFunction(String name, Operator function) {
+        
+        Operator op = operators.get(name);
+        if(op == null || op instanceof FunctionDecl) {
+            operators.put(name, function);
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean unbind(String name) {
+        
+        return operators.remove(name) != null || functions.remove(name) != null;
     }
     
     @Override
     public void run() {
         
-        Interpreter intr = new Interpreter(this);
-        Expr.debug = debug;
-        Expr.cp = filepath;
         while(true) {
             String res = intr.repl(System.in);
             if(!res.isEmpty())

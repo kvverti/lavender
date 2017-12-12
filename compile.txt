@@ -1,6 +1,5 @@
 -d classes
 src/Main.java
-src/kvverti/lavender/Expr.java
 src/kvverti/lavender/Lavender.java
 src/kvverti/lavender/Stack.java
 src/kvverti/lavender/operators/Builtin.java
@@ -15,6 +14,9 @@ src/kvverti/lavender/operators/Parameter.java
 src/kvverti/lavender/operators/PiecewiseStackProcedure.java
 src/kvverti/lavender/operators/StackProcedure.java
 src/kvverti/lavender/operators/StringOp.java
+src/kvverti/lavender/runtime/ExprTree.java
+src/kvverti/lavender/runtime/FunctionDecl.java
 src/kvverti/lavender/runtime/Interpreter.java
+src/kvverti/lavender/runtime/Parser.java
 src/kvverti/lavender/runtime/Token.java
 src/kvverti/lavender/runtime/Tokens.java

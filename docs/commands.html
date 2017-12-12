@@ -10,12 +10,57 @@
     <div id="content">
         <h1>Runtime Commands</h1>
         <p>
-            In addition to expressions, Lavender programs may contain commands that change the state of the runtime. Runtime commands may only appear at the top level, and follow this format.
+            In addition to expressions, Lavender programs may contain commands that change the state of the runtime. Runtime commands may only appear at the top level, and follow the format below.
             <span class="code">
                 @ <i>&lt;command&gt; [args...]</i>
             </span>
-            Runtime commands may not be split across multiple lines.
+            Unlike expressions, runtime commands do not produce values and cannot interact with program state. Runtime commands are similar to C language preprocessor directives, except that they are executed at runtime in line with the source code. In particular, commands must be on a line of their own and may not span multiple lines.
         </p>
+        <p>
+            The list of runtime commands is as follows.
+        </p>
+        <style>
+            #command-table td:nth-child(odd) {
+                width: 30%;
+            }
+            #command-table td:nth-child(even) {
+                width: 70%;
+            }
+        </style>
+        <table id="command-table">
+            <tr>
+                <th>Command Format</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td><code>@namespace <i>[namespace]</i></code></td>
+                <td>Changes the current namespace to the namespace given. Namespaces must be alphanumeric. If the argument is not specified, the current namespace is echoed to the console.</td>
+            </tr>
+            <tr>
+                <td><code>@import <i>&lt;file&gt;</i></code></td>
+                <td>Evaluates the contents of the specified file. The file location is relative to the filepath specified with the <code>-fp</code> command line option.</td>
+            </tr>
+            <tr>
+                <td><code>@using <i>&lt;name&gt;</i></code></td>
+                <td>If the name is a qualified name, makes that name visible in the current namespace, else the name is treated as a namespace and all names in that namespace are made visible in the current nanespace. Using commands are reset when the namespace is changed.</td>
+            </tr>
+            <tr>
+                <td><code>@forward <i>&lt;func-decl&gt;</i></code></td>
+                <td>Forward declares the given function. The function's name may be used from this point on as if the function had been defined (however evaluating such expressions is an error). The actual definition of the function must have the same function heading, including number of parameters and passing conventions.</td>
+            </tr>
+            <tr>
+                <td><code>@resolve <i>[files...]</i></code></td>
+                <td>Evaluates the given files and links all imported files. Linking replaces uses of forward declarations of functions with the actual function. It is an error if not all functions have been defined at the point this command is executed.</td>
+            </tr>
+            <tr>
+                <td><code>@delete <i>&lt;qual-name&gt;</i></code></td>
+                <td>Unbinds the specified name from the function it denotes. The name may be used to define a new function. The old function itself is not deleted, and previous uses of the name still refer to the old function.</td>
+            </tr>
+            <tr>
+                <td><code>@quit</code></td>
+                <td>Terminates the runtime.</td>
+            </tr>
+        </table>
     </div>
     <iframe id="footer-frame" src="footer.html"></iframe>
 </body>
