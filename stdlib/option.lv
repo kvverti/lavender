@@ -1,26 +1,33 @@
 @import "global.lvh"
+@import "algorithm.lvh"
 @import "option.lvh"
 
 @namespace option
+@using algorithm
 
 (def Some(value) =>
     (def obj(i)
-        => value ; i = \get\
+        => (def(=> default) => value) ; i = \orElse\
         => (def(func) => Option([func](value))) ; i = \map\
         => (def(func) => [func](value)) ; i = \flatmap\
         => (def(func) => \obj if [func](value) else None) ; i = \filter\
         => (def(accum, func) => [func](accum, value)) ; i = \reduce\
+        => (def(elem) => elem = value) ; i = \in\
         => 1 ; i = \size
+        => "Some(" + str(value) + ")" ; i = \str
     )
 )
 
 (def None() =>
     (def value(i)
+        => (def(=> default) => default) ; i = \orElse\
         => (def(func) => None) ; i = \map\
         => (def(func) => None) ; i = \flatmap\
         => (def(func) => None) ; i = \filter\
         => (def(accum, func) => accum) ; i = \reduce\
+        => (def(elem) => false) ; i = \in\
         => 0 ; i = \size
+        => "None" ; i = \str
     )
 )
 
@@ -29,4 +36,4 @@
     => Some(value) ; rest
 )
 
-def i_get(self) => [self](\get\)
+def i_orElse(self, => default) => [[self](\orElse\)](default)

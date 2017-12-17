@@ -1,6 +1,10 @@
 @import "global.lvh"
+@import "algorithm.lvh"
 @import "list.lvh"
+
 @namespace list
+@using vector:Vector
+@using algorithm
 
 (def r_<::(head, tail) =>
     (def node(i)
@@ -27,7 +31,10 @@
             => Nil ; n = 0
             => head <:: (tail take (n - 1)) ; rest
         ) ; i = \take\
-        => \node ; i = \toList
+        => (def(idx, func)
+            => [func](head) <:: tail ; idx = 0
+            => head <:: (tail replace (idx - 1, func)) ; idx > 0
+        ) ; i = \replace\
         => 1 + [tail](i) ; i = \size
         => "[ " + (\node reduce ("", def(a, b) => a + str(b) + " ")) + "]" ; i = \str
     )
@@ -44,7 +51,7 @@
         => (def(struct2) => Nil) ; i = \zip\
         => (def(struct2) => struct2) ; i = \++\
         => (def(n) => Nil) ; i = \take\
-        => Nil ; i = \toList
+        => (def(idx, func) => Nil) ; i = \replace\
         => "[]" ; i = \str
     )
 )

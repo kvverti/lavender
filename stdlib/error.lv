@@ -1,7 +1,9 @@
 @import "global.lvh"
+@import "algorithm.lvh"
 @import "error.lvh"
 
 @namespace error
+@using algorithm
 
 (def Error(type, info) =>
     (def obj(i)

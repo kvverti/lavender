@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>Lavender Documentation</title>
+    <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+    <iframe id="header-frame" src="header.html"></iframe>
+    <div id="content">
+        <h1>Object-Like Functions</h1>
+        <p>
+            The Lavender standard library makes heavy use of functions that act like objects. Object-like functions (or simply objects) are typically functions that return a piecewise nested function whose inputs are functions, although the concept of object-like functions is unknown to the language. Syntactically, object-like functions are defined like this.
+            <pre class="code">
+(def <i>&lt;name&gt;</i>(<i>&lt;fields...&gt;</i>) =&gt;
+    (def obj(i)
+        =&gt; (def(<i>&lt;args...&gt;</i>) => <i>&lt;body&gt;</i>) ; i = \<i>&lt;methodname&gt;</i>\
+        =&gt; ...
+    )
+)</pre>
+            The outer function is similar to a constructor, where its parameters are analogous to object fields. The returned function (generally named <code>obj</code>) is the equivalent of the current instance (the <code>this</code> or <code>self</code> reference), and its inner functions are the equivalent of methods. Object-like functions may take no parameters; in this case the definition is that of a singleton object. Singleton object instances are typically named <code>value</code>.
+        </p>
+        <h2>Singleton Objects (Values)</h2>
+        <p>
+            An object that takes no parameters is called a singleton object, or simply a value. Values in the standard library include the empty list <code>Nil</code> and the enpty option <code>None</code>. Both of these values are objects which act like lists and options, respectively. However, values may contain no methods at all and be used only for the unique value they define. Enumeration types may use these kinds of values.
+            <pre class="code">
+&gt; def Singleton() =&gt; def value(i) =&gt; \value    ' Define a marker value
+global$Singleton:value
+&gt; Singleton
+global$Singleton:value
+&gt; Singleton = Singleton
+1.0
+</pre>
+        </p>
+        <h2>Forwarding Functions</h2>
+        <p>
+            Methods on objects are called by passing a special value to the object. However, this requires the use of square bracket notation not only on the object itself, but also on the function value returned by the object. To alleviate this syntactic messiness, the special values passed to the object are typically forwarding functions. Forwarding functions are infix functions that relay the remainder of their arguments to their first argument. The use of forwarding functions enables object methods to be called in infix notation.
+            <pre class="code">
+&gt; def i_add(obj, param) =&gt; [[obj](\add\)](param)      ' Define forwarding function
+global:add
+&gt; (def NumStore(x) =&gt;                                 ' Simple object that stores a number
+&gt;     (def obj(i)
+&gt;         =&gt; (def(y) =&gt; x + y) ; i = \add\
+&gt;     )
+&gt; )
+global:NumStore
+&gt; NumStore(2) add 1                                   ' Static binding (preferred)
+3.0
+&gt; NumStore(2).add(1)                                  ' Dynamic binding
+3.0</pre>
+            Note that dynamic binding syntax is visually similar to a method call in traditional OOP languages. However, dynamic binding in Lavender is <em>not the same</em> as virtual method invocation. Because methods are defined within the objects and not within forwarding functions, virtual methods may be implemented by returning a different method when passed the same forwarding function.
+        </p>
+        <h2>Prototypes, Self, and Polymorphism</h2>
+        <p>
+            Objects may extend other objects through a prototype-based inheritance scheme. Any object may be used as the prototype for another, although an object may not have multiple prototypes. Extending a prototype is done by defining a method for the <code>prototype</code> function which returns the prototype and forwarding to that prototype inside the object.
+            <pre class="code">
+(def derived(args) =&gt;
+    (def obj(i)
+        =&gt; base(args) ; i = \prototype
+        =&gt; (...other methods...)
+        =&gt; [prototype(\obj)](i) ; rest
+    )
+)</pre>
+            Note that the function value <code>\obj</code> is the (static) current object.
+        </p>
+        <h3>Overriding Methods</h3>
+        <p>
+            Methods in prototype objects may be overridden in derived objects without any special syntax. Simply define a method for the same forwarding function in the derived object to override the method in the prototype object. The override will be found and called by users of the object and any further derived objects. However, the base prototype methods will continue to call the base method.
+            <pre class="code">
+<!-- So long! -->
+&gt; def i_getMyString(obj) =&gt; [obj](\getMyString\)      ' Forwarding function
+global:getMyString
+&gt; (def base(x) =&gt;
+&gt;     (def obj(i)
+&gt;         =&gt; str(x) + (\obj getMyString) ; i = \str
+&gt;         =&gt; " from base" ; i = \getMyString\         ' Method in base
+&gt;     )
+&gt; )
+global:base
+&gt; (def derived(x) =&gt;
+&gt;     (def obj(i)
+&gt;         =&gt; base(x) ; i = \prototype
+&gt;         =&gt; " from derived" ; i = \getMyString\      ' Method in derived
+&gt;         =&gt; [prototype(\obj)](i) ; rest
+&gt;     )
+&gt; )
+global:derived
+&gt; base(1) getMyString                                 ' Calls base method
+ from base
+&gt; str(base(1))                                        ' Calls base method
+1.0 from base
+&gt; derived(1) getMyString                              ' Calls derived method
+ from derived
+&gt; str(derived(1))                                     ' Calls base method (!)
+1.0 from base</pre>
+        </p>
+        <h3>Polymorphic Prototypes</h3>
+        <p>
+            In the last example, the method defined for <code>str</code> in the base was calling the <code>base</code> method despite the actual object being a <code>derived</code> object. This is because the value of <code>\obj</code> (the current object) refers to the <code>base</code> object from within its definition. In order for methods in <code>base</code> to call methods in <code>derived</code>, the current object must be passed to <code>base</code> when the <code>derived</code> object is created. Such prototypes that accept the current object as a parameter are called <em>polymorphic prototypes</em>, and are similar to interfaces or abstract classes. To modify the above example to use polymorphic prototypes, <code>base</code> should be made into a polymorphic prototype and a convenience object should be defined to allow use of the <code>base</code> object without passing an explicit current object. A polymorphic prototype should use always use its current object parameter to refer to the current object, except when it itself extends a prototype, in which case <code>\obj</code> is used as the argument to the <code>prototype</code> function.
+            <pre class="code">
+<!-- Even longer!! -->
+&gt; def i_getMyString(obj) =&gt; [obj](\getMyString\)      ' Forwarding function
+global:getMyString
+&gt; (def _base_prototype(self, x) =&gt;                    ' Base object
+&gt;     (def obj(i)
+&gt;         =&gt; str(x) + (self getMyString) ; i = \str
+&gt;         =&gt; " from base" ; i = \getMyString\         ' Method in base
+&gt;     )
+&gt; )
+global:_base_prototype
+&gt; (def base(x) =&gt;                                     ' Base convenience object
+&gt;     (def obj(i)
+&gt;         =&gt; _base_prototype(\obj, x) ; i = \prototype
+&gt;         =&gt; [prototype(\obj)](i) ; rest
+&gt;     )
+&gt; )
+global:base
+&gt; (def derived(x) =&gt;
+&gt;     (def obj(i)
+&gt;         =&gt; _base_prototype(\obj, x) ; i = \prototype
+&gt;         =&gt; " from derived" ; i = \getMyString\      ' Method in derived
+&gt;         =&gt; [prototype(\obj)](i) ; rest
+&gt;     )
+&gt; )
+global:derived
+&gt; base(1) getMyString                                 ' Calls base method
+ from base
+&gt; str(base(1))                                        ' Calls base method
+1.0 from base
+&gt; derived(1) getMyString                              ' Calls derived method
+ from derived
+&gt; str(derived(1))                                     ' Calls derived method
+1.0 from derived</pre>
+            The convenience object may also be left out, in which case the polymorphic prototype is known as an <em>abstract prototype</em>. By convention, abstract prototypes are not created directly, but are only extended by other objects.
+        </p>
+    </div>
+    <iframe id="footer-frame" src="footer.html"></iframe>
+</body>
+</html>

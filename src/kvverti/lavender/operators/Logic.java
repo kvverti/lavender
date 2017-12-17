@@ -290,13 +290,19 @@ public class Logic {
             @Override
             public void eval(Operator[] d, Stack stack) {
                 
-                //a <= b implies !(b < a)
                 Operator b = stack.popOp();
                 Operator a = stack.popOp();
-                stack.push(b);
-                stack.push(a);
-                LT.eval(d, stack);
-                stack.push(bool(stack.pop()) ? 0.0 : 1.0);
+                if(a.arity() == 1) {
+                    stack.push(this);
+                    a.eval(d, stack);
+                    Operator tmp = stack.popOp();
+                    if(tmp.arity() == 1) {
+                        stack.push(b);
+                        tmp.eval(d, stack);
+                    } else
+                        stack.push(0.0);
+                } else
+                    stack.push(Constant.value(a) <= Constant.value(b) ? 1.0 : 0.0);
             }
         };
         GT = new Operator(":>", 2, 1, Operator.LEFT_INFIX) {
@@ -304,13 +310,19 @@ public class Logic {
             @Override
             public void eval(Operator[] d, Stack stack) {
                 
-                //a > b implies b < a
                 Operator b = stack.popOp();
                 Operator a = stack.popOp();
-                stack.push(b);
-                stack.push(a);
-                LT.eval(d, stack);
-                stack.push(bool(stack.pop()) ? 1.0 : 0.0);
+                if(a.arity() == 1) {
+                    stack.push(this);
+                    a.eval(d, stack);
+                    Operator tmp = stack.popOp();
+                    if(tmp.arity() == 1) {
+                        stack.push(b);
+                        tmp.eval(d, stack);
+                    } else
+                        stack.push(0.0);
+                } else
+                    stack.push(Constant.value(a) > Constant.value(b) ? 1.0 : 0.0);
             }
         };
         GE = new Operator(":>=", 2, 1, Operator.LEFT_INFIX) {
@@ -318,9 +330,19 @@ public class Logic {
             @Override
             public void eval(Operator[] d, Stack stack) {
                 
-                //a >= b implies !(a < b)
-                LT.eval(d, stack);
-                stack.push(bool(stack.pop()) ? 0.0 : 1.0);
+                Operator b = stack.popOp();
+                Operator a = stack.popOp();
+                if(a.arity() == 1) {
+                    stack.push(this);
+                    a.eval(d, stack);
+                    Operator tmp = stack.popOp();
+                    if(tmp.arity() == 1) {
+                        stack.push(b);
+                        tmp.eval(d, stack);
+                    } else
+                        stack.push(0.0);
+                } else
+                    stack.push(Constant.value(a) >= Constant.value(b) ? 1.0 : 0.0);
             }
         };
         AND = new Operator(":&", 2, 1, Operator.LEFT_INFIX) {

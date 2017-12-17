@@ -1,0 +1,33 @@
+@namespace algorithm
+
+' The algorithm namespace contains forwarding functions that
+' correspond to common functional operation.
+
+' Replaces each element of obj using the given mapping function
+@forward i_map(obj, func)
+
+' Replaces each element of obj using the given mapping function
+' obj should support concatenation if it supports flatmap
+@forward i_flatmap(obj, func)
+
+' Returns a new object with the elements passed by the filtering function
+@forward i_filter(obj, func)
+
+' Combines the elements of obj with the given seed and reduction function
+@forward i_reduce(obj, identity, func)
+
+' Zips two sequences into a sequence of tuples
+' The longer sequence has its tail cut off
+@forward i_zip(seq1, seq2)
+
+' Returns the first limit elements of seq1
+@forward i_take(seq1, limit)
+
+' Replaces the element at the given index using the given function
+@forward i_replace(seq, index, func)
+
+' Returns whether the geven element is present in the given object
+@forward i_in(elem, obj)
+
+' Concatenates the two objects
+@forward i_++(obj1, obj2)

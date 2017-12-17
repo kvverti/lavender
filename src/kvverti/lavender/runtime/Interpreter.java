@@ -81,7 +81,7 @@ public class Interpreter {
         List<Token> tokens = new ArrayList<>();
         do {
             if(repl)
-                System.out.print("> ");
+                System.out.print(currentDomain + "> ");
             getLine(sc, nesting, tokens);
             if(nesting[0] < 0 || nesting[1] < 0)
                 return "Unbalanced brackets in input";
@@ -210,8 +210,26 @@ public class Interpreter {
                     }
                     return "Using " + name.value();
                 }
+            case "dump":
+                System.out.println("===============================");
+                environment.dump();
+                System.out.println("===============================");
+                return "";
             default:
                 return "Command not found: " + commandName;
         }
+    }
+    
+    public void dump() {
+        
+        System.out.println("Lavender interpreter information:");
+        System.out.println("Function aliases:");
+        for(Map.Entry<String, String> entry : importedFunctionNames.entrySet()) {
+            System.out.print(entry.getKey());
+            System.out.print(" -> ");
+            System.out.println(entry.getValue());
+        }
+        System.out.println("Contents of stack:");
+        System.out.println(theStack);
     }
 }

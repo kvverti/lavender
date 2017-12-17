@@ -1,0 +1,13 @@
+@import "algorithm.lvh"
+
+@namespace algorithm
+
+def i_map(obj, func) => [[obj](\map\)](func)
+def i_flatmap(obj, func) => [[obj](\flatmap\)](func)
+def i_filter(obj, func) => [[obj](\filter\)](func)
+def i_reduce(obj, identity, func) => [[obj](\reduce\)](identity, func)
+def i_zip(seq1, seq2) => [[seq1](\zip\)](seq2)
+def i_take(seq, limit) => [[seq](\take\)](limit)
+def i_replace(seq, index, func) => [[seq](\replace\)](index, func)
+def i_in(elem, obj) => [[obj](\in\)](elem)
+def i_++(obj1, obj2) => [[obj1](\++\)](obj2)

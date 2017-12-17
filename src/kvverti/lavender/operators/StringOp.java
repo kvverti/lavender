@@ -4,25 +4,46 @@ import kvverti.lavender.Stack;
 
 public class StringOp extends Operator {
     
-    private class Lt extends Operator {
+    private class Comp extends Operator {
         
-        Lt() {
-            super(":string$lt", 1, 1, Operator.PREFIX);
+        private final int wh;
+        
+        Comp(int which) {
+            super(":string$comp", 1, 1, Operator.PREFIX);
+            wh = which;
         }
         
         @Override
         public void eval(Operator[] p, Stack stack) {
             
             Operator b = stack.popOp();
-            if(b instanceof StringOp)
-                stack.push(value.compareTo(((StringOp) b).value) < 0 ? 1.0 : 0.0);
-            else
+            if(b instanceof StringOp) {
+                switch(wh) {
+                case 0:
+                    stack.push(value.compareTo(((StringOp) b).value) < 0 ? 1.0 : 0.0);
+                    break;
+                case 1:
+                    stack.push(value.compareTo(((StringOp) b).value) > 0 ? 1.0 : 0.0);
+                    break;
+                case 2:
+                    stack.push(value.compareTo(((StringOp) b).value) <= 0 ? 1.0 : 0.0);
+                    break;
+                case 3:
+                    stack.push(value.compareTo(((StringOp) b).value) >= 0 ? 1.0 : 0.0);
+                    break;
+                default:
+                    throw new AssertionError(wh);
+                }
+            } else
                 stack.push(0.0);
         }
     }
     
     private final String value;
-    private final Operator lt = new Lt();
+    private final Operator lt = new Comp(0);
+    private final Operator gt = new Comp(1);
+    private final Operator le = new Comp(2);
+    private final Operator ge = new Comp(3);
     
     private StringOp(String value) {
         
@@ -87,6 +108,12 @@ public class StringOp extends Operator {
             stack.push(value.length());
         } else if(op == Logic.LT) {
             stack.push(lt);
+        } else if(op == Logic.LE) {
+            stack.push(le);
+        } else if(op == Logic.GT) {
+            stack.push(gt);
+        } else if(op == Logic.GE) {
+            stack.push(ge);
         } else {
             double idx = Constant.value(op);
             if(idx >= 0 && idx < value.length())

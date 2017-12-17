@@ -5,7 +5,7 @@
 
 (def i_substring(self, start, end)
     => "" ; start = end
-    => [self](start) + self substring (start + 1, end) ; rest
+    => [self](start) + (self substring (start + 1, end)) ; rest
 )
 
 (def _findFirstIdx(self, str, i)

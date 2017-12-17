@@ -3,4 +3,4 @@
 @forward None()
 @forward Some(value)
 @forward Option(value)
-@forward i_get(self)
+@forward i_orElse(self, => default)

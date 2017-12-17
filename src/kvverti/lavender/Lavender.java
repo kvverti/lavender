@@ -15,6 +15,7 @@ import kvverti.lavender.operators.Operator;
 import kvverti.lavender.operators.Logic;
 import kvverti.lavender.operators.Io;
 import kvverti.lavender.operators.FileObj;
+import kvverti.lavender.operators.Vector;
 import kvverti.lavender.runtime.Interpreter;
 import kvverti.lavender.runtime.FunctionDecl;
 
@@ -101,6 +102,7 @@ public class Lavender extends Thread {
         functions.put("io:gets", Io.GETS);
         functions.put("io:stdin", new FileObj(true));
         functions.put("io:stdout", new FileObj(false));
+        functions.put("vector:fromList", Vector.MK_VECTOR);
     }
     
     public boolean debug() { return debug; }
@@ -181,6 +183,25 @@ public class Lavender extends Thread {
     public boolean unbind(String name) {
         
         return operators.remove(name) != null || functions.remove(name) != null;
+    }
+    
+    public void dump() {
+     
+        System.out.println("Lavender runtime information:");
+        System.out.print("Debug mode: ");
+        System.out.println(debug);
+        System.out.print("Library filepath: ");
+        System.out.println(filepath);
+        System.out.println("Declared functions:");
+        for(String s : functions.keySet()) {
+            System.out.print(s);
+            System.out.println(" (prefix)");
+        }
+        for(String s : operators.keySet()) {
+            System.out.print(s);
+            System.out.println(" (infix)");
+        }
+        intr.dump();
     }
     
     @Override
