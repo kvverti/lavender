@@ -29,7 +29,7 @@
         ) ; i = \zip\
         => (def(n)
             => Nil ; n = 0
-            => head <:: (tail take (n - 1)) ; rest
+            => head <:: (tail take (n - 1)) ; n > 0
         ) ; i = \take\
         => (def(idx, func)
             => [func](head) <:: tail ; idx = 0

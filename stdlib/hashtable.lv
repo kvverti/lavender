@@ -1,0 +1,68 @@
+@import "global.lvh"
+@import "algorithm.lvh"
+@import "vector.lvh"
+@import "list.lvh"
+@import "hashtable.lvh"
+
+@namespace hashtable
+@using list:<::
+@using list:mklist
+@using list:Nil
+@using algorithm
+@using vector:Vector
+
+def _bucket(hash, vect, key) => [hash](key) % size(vect)
+def _put(table, keyval) => table put ([keyval](0), [keyval](1))
+def _vect(table) => [table](\_vect)
+
+(def _merge(vect2, idx, idx2, result)
+    => result ; idx = size(vect2)
+    => _merge(vect2, idx + 1, 0, result) ; idx2 = size([vect2](idx))
+    => _merge(vect2, idx, idx2 + 1, _put(result, [[vect2](idx)](idx2))) ; rest
+)
+
+(def _equals(entries1, entries2) =>
+    size(entries1) = size(entries2)
+    && size(entries1 filter (def(x) => !(x in entries2))) = 0
+    && size(entries2 filter (def(x) => !(x in entries1))) = 0
+)
+
+(def _Hashtable(hash, vect) =>
+    (def obj(i)
+        => vect ; i = \_vect
+        => (def(key) => key in ([vect](_bucket(hash, vect, key)) map (def(e) => [e](0)))) ; i = \in\
+        => (def(key, value) => _Hashtable(hash,
+            vect replace (_bucket(hash, vect, key),
+                def(bucket) => (key -> value) <:: (bucket filter (def(entry) => [entry](0) != key))))
+        ) ; i = \put\
+        => (def(key) => _Hashtable(hash,
+            vect replace (_bucket(hash, vect, key),
+                def(bucket) => bucket filter (def(entry) => [entry](0) != key)))
+        ) ; i = \remove\
+        => (def(func) =>
+            _Hashtable(hash, vect map (def(buk) => buk map (def(e) => [e](0) -> [func]([e](1)))))
+        ) ; i = \map\
+        => (def(func) =>
+            _Hashtable(hash, vect map (def(buk) => buk filter func))
+        ) ; i = \filter\
+        => (def(ac, func) => vect reduce (Nil, \++\) reduce (ac, func)) ; i = \reduce\
+        => (def(table2) => _merge(vect, 0, 0, table2)) ; i = \++\
+        => vect map \size reduce (0, \+\) ; i = \size
+        => "{ " + (vect
+            map (def(bucket) => bucket reduce ("", def(a, x) => a + str(x) + " "))
+            reduce ("", \+\))
+            + "}"
+        ; i = \str
+        => (def(other)
+            => _equals(vect reduce (Nil, \++\), _vect(other) reduce (Nil, \++\)) ; !isNaN(_vect(other))
+            => false ; rest
+        ) ; i = \=\
+    )
+)
+
+def i_put(self, key, value) => [[self](\put\)](key, value)
+def i_remove(self, key) => [[self](\remove\)](key)
+
+def Hashtable(hash, buckets) => _Hashtable(hash, Vector(mklist(buckets, def(x) => Nil)))
+
+def StrHash() => \:strhash

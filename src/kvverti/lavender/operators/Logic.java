@@ -28,6 +28,7 @@ public class Logic {
     public static final Operator MIN;
     public static final Operator STR;
     public static final Operator NUM;
+    public static final Operator STR_HASH;
     
     //comparison operators (1.0 is true, 0.0 is false)
     public static final Operator EQ;
@@ -227,6 +228,18 @@ public class Logic {
                     op.eval(params, stack);
                 } else
                     stack.push(Constant.value(op));
+            }
+        };
+        STR_HASH = new Operator(":strhash", 1, 1, Operator.PREFIX) {
+          
+            @Override
+            public void eval(Operator[] params, Stack stack) {
+                
+                Operator op = stack.popOp();
+                int h = op.hashCode();
+                double d = h < 0 ? -h * 65536.0 : h;
+                assert d >= 0 : d;
+                stack.push(d);
             }
         };
         EQ = new Operator(":=", 2, 1, Operator.LEFT_INFIX) {

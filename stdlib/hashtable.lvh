@@ -1,0 +1,8 @@
+@namespace hashtable
+
+@forward Hashtable(hash, buckets)
+@forward i_put(self, key, value)
+@forward i_remove(self, key)
+
+' A value for the builtin string hash function
+@forward StrHash()

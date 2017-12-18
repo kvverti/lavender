@@ -6,23 +6,10 @@
 @using list:Nil
 @using list:<::
 
-(def _str_impl(vec, i)
-    => "" ; i = size(vec)
-    => str([vec](i)) + " " + _str_impl(vec, i + 1) ; rest
-)
-
 (def _toList_impl(vec, i)
     => Nil ; i = size(vec)
     => [vec](i) <:: _toList_impl(vec, i + 1) ; rest
 )
 
-(def _VectorWrapper(vec)
-    => (def obj(i)
-        => [vec](i) ; i >= 0
-        => size(vec) ; i = \size
-        => "[ " + _str_impl(vec, 0) + "]" ; i = \str
-    )
-)
-
-def Vector(list) => _VectorWrapper(fromList(list))
+def Vector(list) => fromList(list)
 def i_toList(vector) => _toList_impl(vector, 0)

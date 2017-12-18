@@ -103,6 +103,7 @@ public class Lavender extends Thread {
         functions.put("io:stdin", new FileObj(true));
         functions.put("io:stdout", new FileObj(false));
         functions.put("vector:fromList", Vector.MK_VECTOR);
+        functions.put(":strhash", Logic.STR_HASH);
     }
     
     public boolean debug() { return debug; }

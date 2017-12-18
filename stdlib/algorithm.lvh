@@ -7,13 +7,14 @@
 @forward i_map(obj, func)
 
 ' Replaces each element of obj using the given mapping function
-' obj should support concatenation if it supports flatmap
+' The mapping function should return the same type of object as obj
 @forward i_flatmap(obj, func)
 
 ' Returns a new object with the elements passed by the filtering function
 @forward i_filter(obj, func)
 
 ' Combines the elements of obj with the given seed and reduction function
+' Should be ordered if the object is ordered.
 @forward i_reduce(obj, identity, func)
 
 ' Zips two sequences into a sequence of tuples
@@ -29,5 +30,6 @@
 ' Returns whether the geven element is present in the given object
 @forward i_in(elem, obj)
 
-' Concatenates the two objects
+' Concatenates the two objects. Should be ordered if the object
+' has an ordered traversal over its elements.
 @forward i_++(obj1, obj2)

@@ -22,7 +22,7 @@ public class Main {
             }
         }
         Lavender rt = new Lavender(runargs);
-        System.out.println("Lavender runtime v. 1.0 by Chris Nero");
+        System.out.println("Lavender runtime v. 1.1 by Chris Nero");
         System.out.println("Open source at https://github.com/kvverti/lavender");
         System.out.println("Enter function definitions or expressions");
         rt.start();
