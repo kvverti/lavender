@@ -1,10 +1,13 @@
 @import "string.lvh"
 @import "global.lvh"
+@import "list.lvh"
 
 @namespace string
+@using list:<::
+@using list:Nil
 
 (def i_substring(self, start, end)
-    => "" ; start = end
+    => "" ; start >= end
     => [self](start) + (self substring (start + 1, end)) ; rest
 )
 
@@ -24,14 +27,56 @@
     ](1) ; rest
 )
 
-(def i_find(self, str)
-    => 0 ; str = ""
+(def i_indexOf(self, str, idx)
+    => idx ; str = ""
     => [def impl(off) =>
         [def(x)
             => x ; x >= 0
             => -1 ; off < 0
             => impl(_findFirstIdx(self, str, off + 1)) ; rest
         ](_findFromOffset(self, str, off))
-    ](_findFirstIdx(self, str, 0)) ; rest
+    ](_findFirstIdx(self, str, idx)) ; rest
 )
-    
+
+(def _in(char, chars, idx)
+    => false ; idx = size(chars)
+    => true ; char = [chars](idx)
+    => _in(char, chars, idx + 1) ; rest
+)
+
+(def _nextInSet(str, chars, start)
+    => start ; start >= size(str)
+    => start ; _in([str](start), chars, 0)
+    => _nextInSet(str, chars, start + 1) ; rest
+)
+
+(def _splitOn_impl(str, chars, start, end)
+    => Nil ; start >= size(str)
+    => _split_impl(str, chars, start + 1, _nextInSet(str, chars, start + 1)) ; start = end
+    => (str substring (start, end))
+        <:: _split_impl(str, chars, end + 1, _nextInSet(str, chars, end + 1)) ; rest
+)
+
+(def _splitToChars(str, idx)
+    => Nil ; idx = size(str)
+    => [str](idx) <:: _splitToChars(str, idx + 1) ; rest
+)
+
+(def i_splitOn(self, chars)
+    => _splitOn_impl(self, chars, 0, _nextInSet(self, chars, 0))
+)
+
+(def _split_impl(str, delim, start, end)
+    => Nil ; start >= size(str)
+    => (str substring (start, size(str))) <:: Nil ; end < 0
+    => (str substring (start, end))
+        <:: _splitOn_impl(str,
+        delim,
+        end + size(delim),
+        str indexOf (delim, end + size(delim))) ; rest
+)
+
+(def i_split(self, str)
+    => _splitToChars(self, 0) ; str = ""
+    => _split_impl(self, str, 0, self indexOf (str, 0)) ; rest
+)

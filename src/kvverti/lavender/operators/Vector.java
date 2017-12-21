@@ -236,10 +236,16 @@ public class Vector extends Operator {
             public void eval(Operator[] params, Stack stack) {
                 
                 Operator elem = stack.popOp();
-                if(Arrays.asList(data).contains(elem))
-                    stack.push(1.0);
-                else
-                    stack.push(0.0);
+                for(Operator op : data) {
+                    stack.push(elem);
+                    stack.push(op);
+                    Logic.EQ.eval(params, stack);
+                    if(Logic.bool(stack.pop())) {
+                        stack.push(1.0);
+                        return;
+                    }
+                }
+                stack.push(0.0);
             }
         });
         methods.put(env.getInfixFunction("algorithm:++"),

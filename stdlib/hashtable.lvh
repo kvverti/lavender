@@ -3,6 +3,8 @@
 @forward Hashtable(hash, buckets)
 @forward i_put(self, key, value)
 @forward i_remove(self, key)
+@forward i_get(self, key)
+@forward i_add(self, key)
 
 ' A value for the builtin string hash function
 @forward StrHash()

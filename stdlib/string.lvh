@@ -1,4 +1,18 @@
 @namespace string
 
+' Returns the substring from [start, end)
+' Precondition: 0 <= start <= end
 @forward i_substring(self, start, end)
-@forward i_find(self, str)
+
+' Returns the first index of the given string starting
+' at the given index, or -1 if not found
+@forward i_indexOf(self, str, idx)
+
+' Splits the string on occurrences of any of the specified
+' characters. Multiple occurrences are treated as a single delimiter.
+@forward i_splitOn(self, chars)
+
+' Splits the string on the given delimiter. Multiple
+' occurrences of the delimiter result in an empty
+' string in the output.
+@forward i_split(self, str)

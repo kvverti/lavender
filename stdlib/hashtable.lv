@@ -2,6 +2,7 @@
 @import "algorithm.lvh"
 @import "vector.lvh"
 @import "list.lvh"
+@import "option.lvh"
 @import "hashtable.lvh"
 
 @namespace hashtable
@@ -10,6 +11,7 @@
 @using list:Nil
 @using algorithm
 @using vector:Vector
+@using option:Option
 
 def _bucket(hash, vect, key) => [hash](key) % size(vect)
 def _put(table, keyval) => table put ([keyval](0), [keyval](1))
@@ -35,6 +37,11 @@ def _vect(table) => [table](\_vect)
             vect replace (_bucket(hash, vect, key),
                 def(bucket) => (key -> value) <:: (bucket filter (def(entry) => [entry](0) != key))))
         ) ; i = \put\
+        => (def(key) => \obj put (key, 1)) ; i = \add\
+        => (def(key) =>
+            Option([vect](_bucket(hash, vect, key)) filter (def(e) => [e](0) = key))
+            map (def(e) => [list:head(e)](1))
+        ) ; i = \get\
         => (def(key) => _Hashtable(hash,
             vect replace (_bucket(hash, vect, key),
                 def(bucket) => bucket filter (def(entry) => [entry](0) != key)))
@@ -49,7 +56,8 @@ def _vect(table) => [table](\_vect)
         => (def(table2) => _merge(vect, 0, 0, table2)) ; i = \++\
         => vect map \size reduce (0, \+\) ; i = \size
         => "{ " + (vect
-            map (def(bucket) => bucket reduce ("", def(a, x) => a + str(x) + " "))
+            map (def(bucket) => bucket reduce ("",
+                def(a, x) => a + "(" + str([x](0)) + ": " + str([x](1)) + ") "))
             reduce ("", \+\))
             + "}"
         ; i = \str
@@ -62,6 +70,8 @@ def _vect(table) => [table](\_vect)
 
 def i_put(self, key, value) => [[self](\put\)](key, value)
 def i_remove(self, key) => [[self](\remove\)](key)
+def i_get(self, key) => [[self](\get\)](key)
+def i_add(self, key) => [[self](\add\)](key)
 
 def Hashtable(hash, buckets) => _Hashtable(hash, Vector(mklist(buckets, def(x) => Nil)))
 
