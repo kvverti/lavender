@@ -1,24 +1,52 @@
 @namespace io
 
-' Built in IO functions
-@forward stdout()
-@forward stdin()
-@forward print(file, value)
-@forward getc(file)
-@forward gets(file, len)
-@forward open(filename, args)
-@forward close(file)
-
-@forward Stdout()
+' The standard input file. In a console environment, this is usually the keyboard.
 @forward Stdin()
 
-@forward i_write(out, value)
-@forward i_endl(out)
-@forward i_read(in)
-@forward i_readstr(in)
-@forward i_readnext(len)
-@forward i_lines(in)
-@forward i_tokens(in, delimiter)
+' The standard output file. In a console environment, this is usually the screen.
+@forward Stdout()
 
-@forward with(file)
-@forward i_do(file, code)
+' Creates a file object from the given path. File objects may be opened
+' for reading or writing. Input (read) files provide capabilities for
+' performing operations on tokens or lines. Map, filter, and reduce operate
+' on tokens. Output (write) files provide capabilities for writing and appending values.
+@forward File(path)
+
+' Reads and returns a vector containing the lines of the given file.
+@forward i_lines(file)
+
+' Reads the next token from the file and performs the specified
+' function on it. Returns the file with the next token consumed.
+@forward i_next(file, func)
+
+' Takes the given file and returns a file which splits subsequent tokens
+' on the given string.
+@forward i_withDelimiter(file, str)
+
+' If the file is in an errored state, the specified function is run
+' with the file as an argument and its result is returned. If there
+' is no error, the file is returned.
+@forward i_onError(file, func)
+
+' Built in IO functions
+' @forward stdout()
+' @forward stdin()
+' @forward print(file, value)
+' @forward getc(file)
+' @forward gets(file, len)
+' @forward open(filename, args)
+' @forward close(file)
+
+' @forward Stdout()
+' @forward Stdin()
+
+' @forward i_write(out, value)
+' @forward i_endl(out)
+' @forward i_read(in)
+' @forward i_readstr(in)
+' @forward i_readnext(len)
+' @forward i_lines(in)
+' @forward i_tokens(in, delimiter)
+
+' @forward with(file)
+' @forward i_do(file, code)

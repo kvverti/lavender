@@ -5,7 +5,7 @@ import kvverti.lavender.Stack;
 /** Built in IO functions - the only side effects! */
 public class Io {
     
-    public static final Operator PRINT;
+    /* public static final Operator PRINT;
     public static final Operator GETC;
     public static final Operator GETS;
     public static final Operator CLOSE;
@@ -96,5 +96,5 @@ public class Io {
                 stack.push(file);
             }
         };
-    }
+    } */
 }

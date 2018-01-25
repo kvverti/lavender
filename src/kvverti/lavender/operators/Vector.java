@@ -35,6 +35,11 @@ public class Vector extends Operator {
         fillInMethodTable();
     }
     
+    public static Vector of(Operator[] data) {
+        
+        return new Vector(data);
+    }
+    
     @Override
     public void eval(Operator[] params, Stack stack) {
         

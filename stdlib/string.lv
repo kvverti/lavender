@@ -52,9 +52,9 @@
 
 (def _splitOn_impl(str, chars, start, end)
     => Nil ; start >= size(str)
-    => _split_impl(str, chars, start + 1, _nextInSet(str, chars, start + 1)) ; start = end
+    => _splitOn_impl(str, chars, start + 1, _nextInSet(str, chars, start + 1)) ; start = end
     => (str substring (start, end))
-        <:: _split_impl(str, chars, end + 1, _nextInSet(str, chars, end + 1)) ; rest
+        <:: _splitOn_impl(str, chars, end + 1, _nextInSet(str, chars, end + 1)) ; rest
 )
 
 (def _splitToChars(str, idx)
@@ -70,7 +70,7 @@
     => Nil ; start >= size(str)
     => (str substring (start, size(str))) <:: Nil ; end < 0
     => (str substring (start, end))
-        <:: _splitOn_impl(str,
+        <:: _split_impl(str,
         delim,
         end + size(delim),
         str indexOf (delim, end + size(delim))) ; rest
