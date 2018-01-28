@@ -3,6 +3,7 @@ package kvverti.lavender.operators;
 import java.util.Comparator;
 
 import kvverti.lavender.Stack;
+import kvverti.lavender.ljri.LFunction;
 
 /**
  * Operator precedence: Operators may be binary infix, or unary prefix. Technically n-ary
@@ -21,7 +22,7 @@ import kvverti.lavender.Stack;
  * Separator:       ,              binary left infix
  * Brackets:        ( )            grouping
  */
-public abstract class Operator {
+public abstract class Operator implements LFunction {
     
     public static final int NA = -1;
     public static final int PREFIX = 0;

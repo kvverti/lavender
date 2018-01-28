@@ -2,6 +2,9 @@
 src/Main.java
 src/kvverti/lavender/Lavender.java
 src/kvverti/lavender/Stack.java
+src/kvverti/lavender/ljri/LEnv.java
+src/kvverti/lavender/ljri/LFunction.java
+src/kvverti/lavender/ljri/LavenderFunction.java
 src/kvverti/lavender/operators/Builtin.java
 src/kvverti/lavender/operators/Capture.java
 src/kvverti/lavender/operators/Constant.java

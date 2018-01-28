@@ -95,13 +95,7 @@ public class Lavender extends Thread {
         functions.put(":+", Logic.UPLUS);
         functions.put(":-", Logic.UMINUS);
         functions.put(":!", Logic.NOT);
-        // functions.put("io:print", Io.PRINT);
-        // functions.put("io:getc", Io.GETC);
-        // functions.put("io:close", Io.CLOSE);
-        // functions.put("io:open", Io.OPEN);
-        // functions.put("io:gets", Io.GETS);
-        // functions.put("io:stdin", new FileObj(true));
-        // functions.put("io:stdout", new FileObj(false));
+        functions.put("io:File", Io.FILE);
         functions.put("vector:fromList", Vector.MK_VECTOR);
         functions.put(":strhash", Logic.STR_HASH);
     }
@@ -109,12 +103,6 @@ public class Lavender extends Thread {
     public boolean debug() { return debug; }
     
     public String filepath() { return filepath; }
-    
-    @Deprecated
-    public Map<String, Operator> functions() { return functions; }
-    
-    @Deprecated
-    public Map<String, Operator> operators() { return operators; }
     
     public void loadFile(String file) {
         

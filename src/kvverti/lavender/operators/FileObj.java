@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.stream.Stream;
 
 import kvverti.lavender.Stack;
 import kvverti.lavender.Lavender;
@@ -31,7 +32,7 @@ public class FileObj extends Operator implements Closeable {
     
     public FileObj(boolean sysin) {
         
-        super(":$FILE", 0, 1, Operator.NA);
+        super(":$FILE", 1, 1, Operator.NA);
         file = null;
         if(sysin) {
             out = null;
@@ -42,13 +43,15 @@ public class FileObj extends Operator implements Closeable {
             in = null;
             state = OUTPUT;
         }
+        fillInMethodTable();
     }
     
     /** Creates a file with the given name */
     public FileObj(String name) {
         
         super(":FILE[" + name + "]", 1, 1, Operator.NA);
-        file = new File(name);
+        file = new File(Lavender.getRuntime().filepath() + "/" + name);
+        fillInMethodTable();
     }
     
     public boolean openRead() {
@@ -63,8 +66,11 @@ public class FileObj extends Operator implements Closeable {
                 state = ERRORED;
                 return false;
             }
-        }
-        return state == INPUT;
+        } else if(state == INPUT) {
+            //in.useDelimiter(delim);
+            return true;
+        } else
+            return false;
     }
     
     public StringOp nextToken() {
@@ -77,7 +83,21 @@ public class FileObj extends Operator implements Closeable {
     @Override
     public void eval(Operator[] p, Stack stack) {
         
-        stack.push(this);
+        Operator op = methods.get(stack.popOp());
+        if(op != null) {
+            if(op.arity() == 0)
+                op.eval(p, stack);
+            else
+                stack.push(op);
+        } else
+            stack.push(Builtin.NAN);
+    }
+    
+    @Override
+    public Operator resolve() {
+     
+        fillInMethodTable();
+        return this;
     }
     
     @Override
@@ -105,8 +125,8 @@ public class FileObj extends Operator implements Closeable {
             public void eval(Operator[] d, Stack stack) {
                 
                 if(state == UNINIT) {
-                    try {
-                        Operator[] lines = Files.lines(file.toPath())
+                    try(Stream<String> tmp = Files.lines(file.toPath())) {
+                        Operator[] lines = tmp
                             .collect(toList())
                             .stream()
                             .map(StringOp::ofLiteral)
@@ -119,6 +139,22 @@ public class FileObj extends Operator implements Closeable {
                     stack.push(Builtin.NAN);
             }
         });
+        methods.put(env.getInfixFunction("io:tokens"),
+            new Operator(":$FILE$tokens", 0, 1, Operator.PREFIX) {
+        
+            @Override
+            public void eval(Operator[] d, Stack stack) {
+                
+                if(openRead()) {
+                    List<Operator> ls = new ArrayList<>();
+                    while(in.hasNext())
+                        ls.add(nextToken());
+                    close();
+                    stack.push(Vector.of(ls.toArray(new Operator[0])));
+                } else
+                    stack.push(Vector.of(new Operator[0]));
+            }
+        });
         methods.put(env.getInfixFunction("io:next"),
             new Operator(":$FILE$next", 1, 1, Operator.PREFIX) {
                 
@@ -128,29 +164,41 @@ public class FileObj extends Operator implements Closeable {
                 Operator func = stack.popOp();
                 StringOp tok = nextToken();
                 stack.push(tok);
-                func.eval(d, stack);
-                stack.popOp();
-                stack.push(this);
+                if(func.arity() == 1) {
+                    func.eval(d, stack);
+                    stack.popOp();
+                }
+                stack.push(FileObj.this);
             }
         });
-        methods.put(env.getInfixFunction("algorithm:map"),
-            new Operator(":$FILE$map", 1, 1, Operator.PREFIX) {
+        methods.put(env.getInfixFunction("io:withDelimiter"),
+            new Operator(":$FILE$withDelimiter", 1, 1, Operator.PREFIX) {
            
             @Override
             public void eval(Operator[] d, Stack stack) {
                 
-                Operator func = stack.popOp();
-                if(openRead()) {
-                    List<Operator> ls = new ArrayList<>();
-                    while(in.hasNext()) {
-                        stack.push(StringOp.ofLiteral(in.next()));
-                        func.eval(d, stack);
-                        ls.add(stack.popOp());
-                    }
-                    stack.push(Vector.of(ls.toArray(new Operator[0])));
-                } else {
-                    stack.push(Vector.of(new Operator[0]));
+                Operator op = stack.popOp();
+                if(op instanceof StringOp) {
+                    delim = op.toString();
                 }
+                stack.push(FileObj.this);
+            }
+        });
+        methods.put(env.getInfixFunction("io:onError"),
+            new Operator(":$FILE$onError", 1, 1, Operator.PREFIX) {
+        
+            @Override
+            public void eval(Operator[] d, Stack stack) {
+                
+                Operator func = stack.popOp();
+                if(state == ERRORED) {
+                    stack.push(FileObj.this);
+                    if(func.arity() == 1)
+                        func.eval(d, stack);
+                    else
+                        stack.push(Builtin.NAN);
+                } else
+                    stack.push(FileObj.this);
             }
         });
     }

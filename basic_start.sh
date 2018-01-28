@@ -1,2 +1,2 @@
 #!/bin/sh
-java -cp classes Main -fp stdlib
+java -cp classes:stdlib Main -fp stdlib

@@ -2,6 +2,9 @@ package kvverti.lavender.runtime;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Scanner;
 import java.util.List;
 import java.util.ArrayList;
@@ -11,6 +14,8 @@ import java.util.HashMap;
 import kvverti.lavender.Lavender;
 import kvverti.lavender.Stack;
 import kvverti.lavender.operators.Operator;
+import kvverti.lavender.ljri.LEnv;
+import kvverti.lavender.ljri.LavenderFunction;
 
 /**
  * The actual interpreter for Lavender. Instances of
@@ -23,6 +28,7 @@ public class Interpreter {
     private final Stack theStack;
     private final Map<String, String> importedFunctionNames;
     private final Parser parser;
+    private final LEnv ljrienv;
     private String currentDomain;
     
     public Interpreter(Lavender env) {
@@ -31,6 +37,7 @@ public class Interpreter {
         theStack = new Stack();
         importedFunctionNames = new HashMap<>();
         parser = new Parser();
+        ljrienv = new LEnv();
         currentDomain = "global";
     }
     
@@ -209,6 +216,47 @@ public class Interpreter {
                             return "Invalid name";
                     }
                     return "Using " + name.value();
+                }
+            case "library":
+                {
+                    if(command.size() != 2)
+                        return "Usage: @library <lib>";
+                    String lib = command.get(1).value();
+                    lib = lib.substring(1, lib.length() - 1);
+                    Class<?> libCls;
+                    try { libCls = Class.forName(lib); }
+                    catch(ClassNotFoundException e) { return "Could not load library (not found)"; }
+                    Object rec;
+                    try {
+                        //try to get a parameter constructor
+                        Constructor<?> ctor = libCls.getConstructor(LEnv.class);
+                        try { rec = ctor.newInstance(ljrienv); }
+                        catch(InstantiationException|IllegalAccessException|InvocationTargetException e) {
+                            return "Could not load library (instantiating receiver)";
+                        }
+                    } catch(SecurityException e) { return "Could not load library (permissions)"; }
+                    catch(NoSuchMethodException e) {
+                        //use the default
+                        try { rec = libCls.newInstance(); }
+                        catch(InstantiationException|IllegalAccessException e2) {
+                            return "Could not load library (instantiating receiver)";
+                        }
+                    }
+                    //get all the functions we need to load
+                    Method[] lfuncs = libCls.getMethods();
+                    for(Method m : lfuncs) {
+                        LavenderFunction lfn = m.getAnnotation(LavenderFunction.class);
+                        if(lfn != null) {
+                            try {
+                                //make the function. Catch all errors
+                                Operator o = (Operator) ljrienv.makeFunction(rec, m);
+                                environment.addPrefixFunction(lfn.value(), o);
+                            } catch(IllegalArgumentException e) {
+                                return "Could not load library (" + e.getMessage() + ")";
+                            }
+                        }
+                    }
+                    return "Sucessfully loaded library";
                 }
             case "dump":
                 System.out.println("===============================");
