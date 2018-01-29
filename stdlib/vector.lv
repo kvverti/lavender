@@ -1,15 +1,55 @@
 @import "global.lvh"
 @import "list.lvh"
+@import "algorithm.lvh"
 @import "vector.lvh"
 
 @namespace vector
+@using algorithm
 @using list:Nil
 @using list:<::
+
+@forward _Vector(data)
 
 (def _toList_impl(vec, i)
     => Nil ; i = size(vec)
     => [vec](i) <:: _toList_impl(vec, i + 1) ; rest
 )
 
-def Vector(list) => fromList(list)
 def i_toList(vector) => _toList_impl(vector, 0)
+
+@library "Vector"
+
+def Vector(list) => _Vector(_fromList(list))
+
+(def _flatmap(data, func, idx)
+    => Vector(Nil) ; idx = _size(data)
+    => [func](_at(data, idx)) ++ _flatmap(data, func, idx + 1) ; rest
+)
+
+(def _reduce(data, accum, func, idx)
+    => accum ; idx = _size(data)
+    => _reduce(data, [func](accum, _at(data, idx)), func, idx + 1) ; rest
+)
+
+(def _str(data, idx)
+    => "" ; idx = _size(data)
+    => str(_at(data, idx)) + " " + _str(data, idx + 1) ; rest
+)
+
+def _data(vec) => [vec](\_data)
+
+(def _Vector(data) =>
+    (def obj(i)
+        => data ; i = \_data
+        => (def(func) => _Vector(_map(data, func))) ; i = \map\
+        => (def(func) => _flatmap(data, func, 0)) ; i = \flatmap\
+        => (def(func) => _Vector(_filter(data, func))) ; i = \filter\
+        => (def(accum, func) => _reduce(data, accum, func, 0)) ; i = \reduce\
+        => (def(vec2) => _Vector(_zip(data, _data(vec2)))) ; i = \zip\
+        => (def(n) => _Vector(_take(data, n))) ; i = \take\
+        => (def(vec2) => _Vector(_concat(data, _data(vec2)))) ; i = \++\
+        => _size(data) ; i = \size
+        => "[ " + _str(data, 0) + "]" ; i = \str
+        => _at(data, i) ; i >= 0
+    )
+)

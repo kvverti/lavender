@@ -53,6 +53,10 @@
                 <td>Evaluates the given files and links all imported files. Linking replaces uses of forward declarations of functions with the actual function. It is an error if not all functions have been defined at the point this command is executed.</td>
             </tr>
             <tr>
+                <td><code>@library <i>&lt;lib&gt;</i></code></td>
+                <td>Loads the functions in the given library. The library in this runtime is a Java class file on the classpath, which includes the Lavender filepath.</td>
+            </tr>
+            <tr>
                 <td><code>@delete <i>&lt;qual-name&gt;</i></code></td>
                 <td>Unbinds the specified name from the function it denotes. The name may be used to define a new function. The old function itself is not deleted, and previous uses of the name still refer to the old function.</td>
             </tr>

@@ -8,6 +8,10 @@ import kvverti.lavender.Lavender;
 import kvverti.lavender.Stack;
 import kvverti.lavender.operators.Operator;
 import kvverti.lavender.operators.Capture;
+import kvverti.lavender.operators.Constant;
+import kvverti.lavender.operators.StringOp;
+import kvverti.lavender.operators.Builtin;
+import kvverti.lavender.operators.Logic;
 
 public final class LEnv {
     
@@ -45,6 +49,8 @@ public final class LEnv {
     /** Applies the given function with the given arguments and returns the result. */
     public LFunction apply(LFunction func, LFunction... args) {
         
+        if(arity(func) != args.length)
+            return Builtin.NAN;
         Stack stack = new Stack();
         for(LFunction lf : args)
             stack.push((Operator) lf);
@@ -78,7 +84,7 @@ public final class LEnv {
         if(name == null)
             throw new IllegalArgumentException("Not a lavender function");
         //end preconditions
-        return new Operator(name.value(), p.length - 1, 1, Operator.NA) {
+        return new Operator(name.value(), p.length - 1, 1, Operator.PREFIX) {
             
             @Override
             public void eval(Operator[] d, Stack stack) {
@@ -104,5 +110,108 @@ public final class LEnv {
     public LFunction capture(LFunction func, LFunction... args) {
         
         return new Capture((Operator) func, Arrays.copyOf(args, args.length, Operator[].class));
+    }
+    
+    private static class JavaWrap extends Operator {
+        
+        final Object obj;
+     
+        JavaWrap(Object obj) {
+            
+            super(obj.toString(), 0, 1, Operator.NA);
+            this.obj = obj;
+        }
+        
+        @Override
+        public void eval(Operator[] d, Stack stack) {
+            
+            stack.push(this);
+        }
+    }
+    
+    /**
+     * Wraps the given Java object in an LFunction. This allows Java objects to be passed into
+     * Lavender functions.
+     */
+    public LFunction wrap(Object obj) {
+        
+        return new JavaWrap(obj);
+    }
+    
+    /**
+     * Unwraps the given LFunction and returns the wrapped Java object. If this function does not
+     * wrap a Java object, or the object is not of the correct type, null is returned.
+     */
+    public <T> T unwrap(LFunction func, Class<T> cls) {
+        
+        if(func instanceof JavaWrap) {
+            Object obj = ((JavaWrap) func).obj;
+            if(cls.isInstance(obj))
+                return cls.cast(obj);
+        }
+        return null;
+    }
+    
+    /**
+     * Returns the undefined value. This value is the basic error value.
+     */
+    public LFunction undefined() {
+        
+        return Builtin.NAN;
+    }
+    
+    /**
+     * Converts the LFunction to a number. If the function does not represent
+     * a number, the floating-point NaN value is returned.
+     */
+    public double asNumber(LFunction f) {
+        
+        return Constant.value((Operator) f);
+    }
+    
+    /**
+     * Converts the given number to an LFunction that can be used by
+     * the Lavender runtime.
+     */
+    public LFunction fromNumber(double d) {
+        
+        return Constant.of(d);
+    }
+    
+    /**
+     * Converts the LFunction to a string. If the function does not represent
+     * a string, null is returned.
+     */
+    public String asString(LFunction f) {
+        
+        if(f instanceof StringOp)
+            return f.toString();
+        return null;
+    }
+    
+    /**
+     * Returns an LFunction representing the given String.
+     */
+    public LFunction fromString(String s) {
+        
+        return StringOp.ofLiteral(s);
+    }
+    
+    /**
+     * Converts the given LFunction to a boolean value. The numbers 0.0 and the
+     * NaN value are falsey, the rest are truthy.
+     */
+    public boolean asBool(LFunction f) {
+        
+        double d = asNumber(f);
+        return d == d && d != 0.0;
+    }
+    
+    /**
+     * Returns an LFunction representing the given boolean.
+     */
+    public LFunction fromBool(boolean b) {
+        
+        return b ? Constant.of(1) : Constant.of(0);
     }
 }

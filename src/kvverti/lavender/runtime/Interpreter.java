@@ -226,6 +226,7 @@ public class Interpreter {
                     Class<?> libCls;
                     try { libCls = Class.forName(lib); }
                     catch(ClassNotFoundException e) { return "Could not load library (not found)"; }
+                    //load the receiver
                     Object rec;
                     try {
                         //try to get a parameter constructor

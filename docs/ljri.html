@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>Lavender Documentation</title>
+    <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+    <iframe id="header-frame" src="header.html"></iframe>
+    <div id="content">
+        <h1>Lavender Java Runtime Interface</h1>
+        <p>
+            The Lavender Java Runtime Interface (LJRI) enables one to define Lavender functions within the JVM language family. These functions may then be loaded and called from Lavender code. Functios created with LJRI have full access to Lavender functions as well as the Java standard libraries.
+        </p>
+        <h2>Example</h2>
+        <p>
+            The example given below defines a function <code>test:addTo</code> that takes in one argument and returns a function that adds it to another argument.
+            <pre class="code">
+public class Test {
+
+    @LavenderFunction("test:addTo")
+    public LFunction addTo(LEnv env, LFunction b) {
+    
+        LFunction plus = env.getFunction("i_:+");
+        return env.capture(plus, b);
+    }
+}</pre>
+            It is equivalent to the following Lavender code.
+            <span class="code">
+                @namespace test<br/>
+                def addTo(b) => def(a) => a + b
+            </span>
+        </p>
+    </div>
+    <iframe id="footer-frame" src="footer.html"></iframe>
+</body>
+</html>
