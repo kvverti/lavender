@@ -3,6 +3,7 @@ package kvverti.lavender.operators;
 import kvverti.lavender.Stack;
 
 /** Built in IO functions - the only side effects! */
+@Deprecated
 public class Io {
     
     public static final Operator FILE;

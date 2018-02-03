@@ -95,8 +95,6 @@ public class Lavender extends Thread {
         functions.put(":+", Logic.UPLUS);
         functions.put(":-", Logic.UMINUS);
         functions.put(":!", Logic.NOT);
-        functions.put("io:File", Io.FILE);
-        functions.put("vector:fromList", Vector.MK_VECTOR);
         functions.put(":strhash", Logic.STR_HASH);
     }
     

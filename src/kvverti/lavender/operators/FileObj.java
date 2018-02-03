@@ -15,6 +15,7 @@ import kvverti.lavender.Lavender;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.collectingAndThen;
 
+@Deprecated
 public class FileObj extends Operator implements Closeable {
     
     private final Map<Operator, Operator> methods = new HashMap<>();

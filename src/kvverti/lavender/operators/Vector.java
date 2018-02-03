@@ -10,8 +10,10 @@ import kvverti.lavender.Lavender;
 import kvverti.lavender.Stack;
 
 /**
+ * @deprecated The LJRI implementation of vectors supercedes this class.
  * An immutable, random-access container usable in Lavender.
  */
+@Deprecated
 public class Vector extends Operator {
     
     public static final Operator MK_VECTOR;

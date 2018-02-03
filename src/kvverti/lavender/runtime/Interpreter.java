@@ -143,6 +143,8 @@ public class Interpreter {
                 if(command.size() != 2)
                     return "Usage: @delete <function>";
                 String func = command.get(1).value();
+                if(func.charAt(0) == ':')
+                    return "Cannot delete builtin function";
                 if(environment.unbind(func))
                     return "Deleted function";
                 return "Function not found";
@@ -203,7 +205,8 @@ public class Interpreter {
                             String namespace = name.value();
                             List<String> names = environment.getNamesInNamespace(namespace);
                             for(String s : names) {
-                                importedFunctionNames.put(s, namespace + ":" + s);
+                                if(s.charAt(0) != '_')
+                                    importedFunctionNames.put(s, namespace + ":" + s);
                             }
                             break;
                         case Token.QUAL_IDENT:
@@ -221,7 +224,10 @@ public class Interpreter {
                 {
                     if(command.size() != 2)
                         return "Usage: @library <lib>";
-                    String lib = command.get(1).value();
+                    Token t = command.get(1);
+                    if(t.type() != Token.STRING)
+                        return "Invalid file";
+                    String lib = t.value();
                     lib = lib.substring(1, lib.length() - 1);
                     Class<?> libCls;
                     try { libCls = Class.forName(lib); }

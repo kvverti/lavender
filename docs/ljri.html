@@ -10,7 +10,7 @@
     <div id="content">
         <h1>Lavender Java Runtime Interface</h1>
         <p>
-            The Lavender Java Runtime Interface (LJRI) enables one to define Lavender functions within the JVM language family. These functions may then be loaded and called from Lavender code. Functios created with LJRI have full access to Lavender functions as well as the Java standard libraries.
+            The Lavender Java Runtime Interface (LJRI) enables one to define Lavender functions within the JVM language family. These functions may then be loaded and called from Lavender code. Functions created with LJRI have full access to Lavender functions, and visa-versa.
         </p>
         <h2>Example</h2>
         <p>
@@ -30,6 +30,40 @@ public class Test {
                 @namespace test<br/>
                 def addTo(b) => def(a) => a + b
             </span>
+            After the function is loaded, it can be used within Lavender the same as any Lavender function.
+        </p>
+        <h3>Creating Functions for LJRI</h3>
+        <p>
+            Functions using the LJRI are defined in normal Java classes. The class in question must have a publicly accessible constructor that takes either no arguments or a single argument of type <code>LEnv</code>. This constructor is called to initialize the object before any functions are loaded.
+            <span class="code">
+                @LavenderFunction("namespace:name")<br/>
+                public LFunction name(LEnv env, LFunction arg1, ...) { ... }
+            </span>
+            LJRI functions are instance methods annotated with the <code>@LavenderFunction</code> annotation. In addition to telling the LJRI that this function is a Lavender function implementation, the value of the annotation gives the name of the Lavender function to create for this function. Fuctions must additionally return the type <code>LFunction</code> and take parameters of type <code>LFunction</code> except for the first parameter, which is always of type <code>LEnv</code>.
+        </p>
+        <h3>LJRI Methods</h3>
+        <p>
+            All interactions with the Lavender runtime are done through the <code>LEnv</code> object passed to each function. This object contains methods for getting and using Lavender functions, binding values to a function, and converting between Lavender functions and Java types. These functions are documented in the LJRI source code in addition to this page.
+            <span class="code">
+                public LFunction getFunction(String name);
+            </span>
+            Retrieves the Lavender function with the specified qualified name. The given name <em>must</em> be prefixed with either <code>u_</code> for a prefix function or <code>i_</code> for an infix function.
+            <span class="code">
+                public LFunction capture(LFunction func, LFunction... args);
+            </span>
+            Returns a Lavender function that binds the given arguments to the last parameters of the given function. The number of arguments passed must be no more than the number of parameters taken by the function.
+            <span class="code">
+                public LFunction apply(LFunction func, LFunction... args);
+            </span>
+            Returns the result of calling the given function with the given arguments. The number of arguments must exactly match the arity of the function, or else the Lavender NaN value is returned.
+            <span class="code">
+                public LFunction wrap(Object obj);
+            </span>
+            Wraps the specified object in a Lavender function. This allows for any Java object to be used as a value in Lavender. While Lavender function cannot access the Java object directly, function using the LJRI may access the object using the <code>unwrap</code> method.
+            <span class="code">
+                public &lt;T&gt; T unwrap(LFunction f, Class&lt;T&gt; cls);
+            </span>
+            Unwraps the specified Lavender function and returns the wrapped Java object. This function checks that the argument <code>f</code> actually wraps a Java object of the specified class, and returns <code>null</code> if this is not the case. Code using this method should check the return value.
         </p>
     </div>
     <iframe id="footer-frame" src="footer.html"></iframe>

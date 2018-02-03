@@ -8,7 +8,7 @@
 @using list:Nil
 @using list:<::
 
-@forward _Vector(data)
+@library "Vector"
 
 (def _toList_impl(vec, i)
     => Nil ; i = size(vec)
@@ -16,10 +16,6 @@
 )
 
 def i_toList(vector) => _toList_impl(vector, 0)
-
-@library "Vector"
-
-def Vector(list) => _Vector(_fromList(list))
 
 (def _flatmap(data, func, idx)
     => Vector(Nil) ; idx = _size(data)
@@ -41,15 +37,20 @@ def _data(vec) => [vec](\_data)
 (def _Vector(data) =>
     (def obj(i)
         => data ; i = \_data
+        => (def(elem) => _in(data, elem)) ; i = \in\
         => (def(func) => _Vector(_map(data, func))) ; i = \map\
         => (def(func) => _flatmap(data, func, 0)) ; i = \flatmap\
         => (def(func) => _Vector(_filter(data, func))) ; i = \filter\
         => (def(accum, func) => _reduce(data, accum, func, 0)) ; i = \reduce\
         => (def(vec2) => _Vector(_zip(data, _data(vec2)))) ; i = \zip\
         => (def(n) => _Vector(_take(data, n))) ; i = \take\
+        => (def(idx, func) => _Vector(_replace(data, idx, func))) ; i = \replace\
         => (def(vec2) => _Vector(_concat(data, _data(vec2)))) ; i = \++\
         => _size(data) ; i = \size
         => "[ " + _str(data, 0) + "]" ; i = \str
+        => (def(vec2) => _eq(data, _data(vec2))) ; i = \=\
         => _at(data, i) ; i >= 0
     )
 )
+
+def Vector(list) => _Vector(_fromList(list))

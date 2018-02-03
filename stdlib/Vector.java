@@ -118,4 +118,44 @@ public class Vector {
         }
         return vec;
     }
+    
+    @LavenderFunction("vector:_in")
+    public LFunction in(LEnv env, LFunction vec, LFunction elem) {
+        
+        LFunction[] data = env.unwrap(vec, LFunction[].class);
+        if(data == null)
+            return env.undefined();
+        LFunction eq = env.getFunction("i_:=");
+        for(LFunction f : data) {
+            LFunction r = env.apply(eq, f, elem);
+            if(env.asBool(r))
+                return env.fromBool(true);
+        }
+        return env.fromBool(false);
+    }
+    
+    @LavenderFunction("vector:_replace")
+    public LFunction replace(LEnv env, LFunction vec, LFunction idx, LFunction func) {
+     
+        LFunction[] data = env.unwrap(vec, LFunction[].class);
+        if(data == null)
+            return env.undefined();
+        double d = env.asNumber(idx);
+        if(d >= 0 && d < data.length) {
+            LFunction[] res = data.clone();
+            res[(int) d] = env.apply(func, data[(int) d]);
+            return env.wrap(res);
+        }
+        return vec;
+    }
+    
+    @LavenderFunction("vector:_eq")
+    public LFunction eq(LEnv env, LFunction vec1, LFunction vec2) {
+        
+        LFunction[] data1 = env.unwrap(vec1, LFunction[].class);
+        LFunction[] data2 = env.unwrap(vec2, LFunction[].class);
+        if(data1 == null || data2 == null)
+            return env.fromBool(false);
+        return env.fromBool(Arrays.equals(data1, data2));
+    }
 }
