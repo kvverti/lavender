@@ -38,13 +38,6 @@ public class Logic {
     public static final Operator GT;
     public static final Operator GE;
     
-    //boolean operators (1.0 is true, 0.0 is false)
-    //nonzero arguments are true, except for NaN, which is false
-    public static final Operator AND;
-    public static final Operator OR;
-    public static final Operator XOR;
-    public static final Operator NOT;
-    
     /** Zero and NaN are false, all other values are true. */
     static boolean bool(double n) {
         
@@ -356,40 +349,6 @@ public class Logic {
                         stack.push(0.0);
                 } else
                     stack.push(Constant.value(a) >= Constant.value(b) ? 1.0 : 0.0);
-            }
-        };
-        AND = new Operator(":&", 2, 1, Operator.LEFT_INFIX) {
-        
-            @Override
-            public void eval(Operator[] d, Stack stack) {
-                
-                //note: no short circuit
-                stack.push(bool(stack.pop()) & bool(stack.pop()) ? 1.0 : 0.0);
-            }
-        };
-        OR = new Operator(":|", 2, 1, Operator.LEFT_INFIX) {
-        
-            @Override
-            public void eval(Operator[] d, Stack stack) {
-                
-                //note: no short circuit
-                stack.push(bool(stack.pop()) | bool(stack.pop()) ? 1.0 : 0.0);
-            }
-        };
-        XOR = new Operator(":^", 2, 1, Operator.LEFT_INFIX) {
-        
-            @Override
-            public void eval(Operator[] d, Stack stack) {
-                
-                stack.push(bool(stack.pop()) ^ bool(stack.pop()) ? 1.0 : 0.0);
-            }
-        };
-        NOT = new Operator(":!", 1, 1, Operator.PREFIX) {
-      
-            @Override
-            public void eval(Operator[] d, Stack stack) {
-                
-                stack.push(bool(stack.pop()) ? 0.0 : 1.0);
             }
         };
     }

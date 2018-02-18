@@ -7,7 +7,10 @@ def Inf() => 1 / 0
 def true() => 1
 def false() => 0
 def rest() => 1
-def bool(a) => !(!a)
+(def bool(a)
+    => true ; a
+    => false ; rest
+)
 def i_//(a, b) => int(a / b)
 def i_if(=> expr, cond) => expr ; cond
 (def i_else(expr, => fall)
@@ -21,6 +24,20 @@ def i_if(=> expr, cond) => expr ; cond
 (def i_||(a, => b)
     => a ; a
     => b ; rest
+)
+(def !(a)
+    => false ; a
+    => true ; rest
+)
+(def i_|(a, b)
+    => true ; a
+    => true ; b
+    => false ; rest
+)
+def i_&(a, b) => !(!a | !b)
+(def i_^(a, b)
+    => !b ; a
+    => !a ; rest
 )
 def size(struct) => [struct](\size)
 def flip(binaryop) => def(a, b) => [binaryop](b, a)

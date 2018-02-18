@@ -39,7 +39,7 @@ public class Test {
                 @LavenderFunction("namespace:name")<br/>
                 public LFunction name(LEnv env, LFunction arg1, ...) { ... }
             </span>
-            LJRI functions are instance methods annotated with the <code>@LavenderFunction</code> annotation. In addition to telling the LJRI that this function is a Lavender function implementation, the value of the annotation gives the name of the Lavender function to create for this function. Fuctions must additionally return the type <code>LFunction</code> and take parameters of type <code>LFunction</code> except for the first parameter, which is always of type <code>LEnv</code>.
+            LJRI functions are instance methods annotated with the <code>@LavenderFunction</code> annotation. In addition to telling the LJRI that this function is a Lavender function implementation, the value of the annotation gives the name of the Lavender function to create for this function. Fuctions must additionally return the type <code>LFunction</code> and take parameters of type <code>LFunction</code> except for the first parameter, which is always of type <code>LEnv</code>. LJRI functions must not throw exceptions. If an LJRI function throws an exception, the runtime will terminate with a fatal linkage error.
         </p>
         <h3>LJRI Methods</h3>
         <p>

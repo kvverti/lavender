@@ -3,7 +3,6 @@
 @import "list.lvh"
 
 @namespace list
-@using vector:Vector
 @using algorithm
 
 (def r_<::(head, tail) =>

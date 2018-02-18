@@ -13,9 +13,6 @@ import java.util.function.BiFunction;
 
 import kvverti.lavender.operators.Operator;
 import kvverti.lavender.operators.Logic;
-import kvverti.lavender.operators.Io;
-import kvverti.lavender.operators.FileObj;
-import kvverti.lavender.operators.Vector;
 import kvverti.lavender.runtime.Interpreter;
 import kvverti.lavender.runtime.FunctionDecl;
 
@@ -69,9 +66,9 @@ public class Lavender extends Thread {
         operators.put(":%", Logic.REMAINDER);
         operators.put(":+", Logic.PLUS);
         operators.put(":-", Logic.MINUS);
-        operators.put(":&", Logic.AND);
-        operators.put(":|", Logic.OR);
-        operators.put(":^", Logic.XOR);
+        // operators.put(":&", Logic.AND);
+        // operators.put(":|", Logic.OR);
+        // operators.put(":^", Logic.XOR);
         operators.put(":=", Logic.EQ);
         operators.put(":!=", Logic.NE);
         operators.put(":>", Logic.GT);
@@ -94,7 +91,7 @@ public class Lavender extends Thread {
         functions.put(":num", Logic.NUM);
         functions.put(":+", Logic.UPLUS);
         functions.put(":-", Logic.UMINUS);
-        functions.put(":!", Logic.NOT);
+        // functions.put(":!", Logic.NOT);
         functions.put(":strhash", Logic.STR_HASH);
     }
     
