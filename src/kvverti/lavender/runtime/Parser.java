@@ -73,7 +73,7 @@ class Parser {
                 //get the left paren
                 t = itr.next();
             } else
-                res.add(new Token("anon$" + inc++, Token.LITERAL));
+                res.add(new Token("anon$"/* + inc++*/, Token.LITERAL));
             if(!t.value().equals("("))
                 throw new RuntimeException("Unexpected token: " + t);
             itr.remove();
@@ -109,6 +109,8 @@ class Parser {
      */
     private List<List<Token>> splitBodies(ListIterator<Token> itr) {
         
+        if(!itr.hasNext())
+            throw new RuntimeException("Function token expected");
         List<List<Token>> res = new ArrayList<>();
         Token t = itr.next();
         if(!t.value().equals("=>"))
@@ -212,8 +214,10 @@ class Parser {
         List<Token> args = splitNameAndArgs(expr);
         String name = args.remove(0).value();
         args.addAll(capture);
-        int fix;
-        {
+        int fix = Operator.PREFIX;
+        //only named function get stored
+        //anonymous functions are always prefix
+        if(!name.equals("anon$")) {
             Operator op = addFuncDecl(domain, name, args, capture.size());
             fix = op.fixing();
             name = op.toString().substring(domain.length() + 1);
@@ -226,7 +230,9 @@ class Parser {
                 args.set(i, new Token(args.get(i).value().substring(3), Token.IDENT));
             }
         }
-        {
+        //only named functions get stored, so we don't need to check
+        //anonymous functions
+        if(!name.equals("anon$")) {
             //check consistency
             Operator op = fix == Operator.PREFIX ? lav.getPrefixFunction(domainAndName) : lav.getInfixFunction(domainAndName);
             assert op != null : domainAndName;
@@ -261,10 +267,13 @@ class Parser {
             Queue<Operator> out = parse(ls, args.size());
             proc = new StackProcedure(domainAndName, args.size(), capture.size(), fix, out, byName);
         }
-        if(proc.fixing() == Operator.PREFIX)
-            lav.addPrefixFunction(proc.toString(), proc);
-        else
-            lav.addInfixFunction(proc.toString(), proc);
+        if(!name.equals("anon$")) {
+            if(proc.fixing() == Operator.PREFIX)
+                lav.addPrefixFunction(proc.toString(), proc);
+            else
+                lav.addInfixFunction(proc.toString(), proc);
+            //todo: add function to global data and add text to text data
+        }
         return proc;
     }
     

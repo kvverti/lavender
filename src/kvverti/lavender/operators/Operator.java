@@ -31,14 +31,12 @@ public abstract class Operator implements LFunction {
     
     private final String str;
     private final int arity;
-    private final int returns;
     private final int fixing;
     
-    protected Operator(String dbname, int ar, int ret, int f) {
+    protected Operator(String dbname, int ar, @Deprecated int ret, int f) {
         
         str = dbname;
         arity = ar;
-        returns = ret;
         fixing = f;
     }
     
@@ -48,7 +46,9 @@ public abstract class Operator implements LFunction {
     /** Returns the number of captured "free" variables */
     public int captured() { return 0; }
     
-    public int returns() { return returns; }
+    /** @deprecated Operators always have one result */
+    @Deprecated
+    public final int returns() { return 1; }
     
     public int fixing() { return fixing; }
     
@@ -67,6 +67,11 @@ public abstract class Operator implements LFunction {
     
     /** No-op by default, should override. */
     public void eval(Operator[] params, Stack stack) { }
+    
+    /**
+     * The offset into the text array where this function begins.
+     */
+    public int getTextOffset() { return 0; }
     
     public Operator resolve() { return this; }
     

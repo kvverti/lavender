@@ -14,7 +14,7 @@ public class Capture extends Operator {
     
     public Capture(Operator f, Operator[] cap) {
         
-        super(f.toString() + Arrays.toString(cap), f.arity() - cap.length, f.returns(), f.fixing());
+        super(f.toString() + Arrays.toString(cap), f.arity() - cap.length, 1, f.fixing());
         wrapped = f;
         capturedParams = cap;
     }

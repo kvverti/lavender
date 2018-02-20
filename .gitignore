@@ -5,6 +5,7 @@ classes/
 # Log file
 *.log
 notes/
+del/
 
 # BlueJ files
 *.ctxt
