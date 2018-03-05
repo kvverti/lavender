@@ -44,11 +44,9 @@ global:add
 &gt;     )
 &gt; )
 global:NumStore
-&gt; NumStore(2) add 1                                   ' Static binding (preferred)
-3.0
-&gt; NumStore(2).add(1)                                  ' Dynamic binding
+&gt; NumStore(2) add 1                                   ' Call function
 3.0</pre>
-            Note that dynamic binding syntax is visually similar to a method call in traditional OOP languages. However, dynamic binding in Lavender is <em>not the same</em> as virtual method invocation. Because methods are defined within the objects and not within forwarding functions, virtual methods may be implemented by returning a different method when passed the same forwarding function.
+            Because methods are defined within the objects and not within forwarding functions, virtual methods may be implemented by returning a different method when passed the same forwarding function.
         </p>
         <h2>Prototypes, Self, and Polymorphism</h2>
         <p>

@@ -107,39 +107,6 @@ Invalid stack
 &gt; -(3)           ' Equiv with parens
 -3.0</pre>
         </p>
-        <h3>Static and Dynamic Binding (NYI)</h3>
-        <p>
-            Infix functions may additionally be called with either static or dynamic binding. Static binding is the default and requires no special syntax. Statically bound functions are resolved once at parse time and always refer to the same function regardless of the value of the arguments. Dynamically bound functions, on the other hand, are resolved each time the function is called, and the actual function called is based on the namespace of one of the arguments. Dynamic binding is specified by putting the dot token before the function's unqualified name.
-            <pre class="code">
-&gt; @namespace foo
-&gt; def Foo() =&gt; def value(i) =&gt; Foo      ' Define a value in namespace foo
-foo$Foo:value
-&gt; def i_func(x) =&gt; "foo"                ' Define foo:func
-foo:func
-&gt; @namespace bar
-&gt; def Bar() =&gt; def value(i) =&gt; Bar      ' Define a value in namespace bar
-foo$Foo:value
-&gt; def i_func(x) =&gt; "bar"                ' Define bar:func
-bar:func
-&gt; @namespace global
-&gt; def i_func(x) =&gt; "global"             ' Define global:func
-global:func
-&gt;
-&gt; ' Now we compare static and dynamic binding
-&gt;
-&gt; foo:Foo func
-global
-&gt; bar:Bar func
-global
-&gt; foo:Foo.func
-foo
-&gt; bar:Bar.func
-bar</pre>
-            When a dynamically bound function is called, the interpreter attempts to bind a function with the same unqualified name in the namespace of the first argument, falling back on the global namespace if no suitable function with that name was defined. If no function could be found, the result is the floating point NaN value. 
-        </p>
-        <p>
-            Dynamic binding is meant to be used in the case where values in multiple namespaces have similar properties (such as the standard library's Try and Option values). While dynamic binding bears a superficial resemblance to virtual method calls in object-oriented languages, virtual method calling is best implemented with forwarding functions in Lavender (see <a href="objects.html">Object-Like Functions</a>).
-        </p>
     </div>
     <iframe id="footer-frame" src="footer.html"></iframe>
 </body>
