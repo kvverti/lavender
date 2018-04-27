@@ -1,0 +1,15 @@
+@namespace math
+
+@forward pi()
+@forward e()
+@forward Inf()
+@forward abs(a)
+@forward sin(a)
+@forward cos(a)
+@forward log(a)
+@forward floor(a)
+@forward ceil(a)
+@forward rint(a)
+@forward int(a)
+@forward max(a, b)
+@forward min(a, b)

@@ -76,17 +76,17 @@ public class Lavender extends Thread {
         operators.put(":>=", Logic.GE);
         operators.put(":<=", Logic.LE);
         //builtin prefix functions and values
-        functions.put(":abs", Logic.ABS);
-        functions.put(":sin", Logic.SIN);
-        functions.put(":cos", Logic.COS);
-        functions.put(":pi", Logic.PI);
-        functions.put(":e", Logic.E);
-        functions.put(":log", Logic.LOG);
-        functions.put(":ceil", Logic.CEIL);
-        functions.put(":floor", Logic.FLOOR);
-        functions.put(":int", Logic.INT);
-        functions.put(":max", Logic.MAX);
-        functions.put(":min", Logic.MIN);
+        // functions.put(":abs", Logic.ABS);
+        // functions.put(":sin", Logic.SIN);
+        // functions.put(":cos", Logic.COS);
+        // functions.put(":pi", Logic.PI);
+        // functions.put(":e", Logic.E);
+        // functions.put(":log", Logic.LOG);
+        // functions.put(":ceil", Logic.CEIL);
+        // functions.put(":floor", Logic.FLOOR);
+        // functions.put(":int", Logic.INT);
+        // functions.put(":max", Logic.MAX);
+        // functions.put(":min", Logic.MIN);
         functions.put(":str", Logic.STR);
         functions.put(":num", Logic.NUM);
         functions.put(":+", Logic.UPLUS);

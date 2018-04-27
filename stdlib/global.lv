@@ -1,9 +1,10 @@
 @import "global.lvh"
+@import "math.lvh"
+
 @namespace global
 
 def NaN() => 0 ; 0
 def isNaN(x) => x != x
-def Inf() => 1 / 0
 def true() => 1
 def false() => 0
 def rest() => 1
@@ -11,7 +12,7 @@ def rest() => 1
     => true ; a
     => false ; rest
 )
-def i_//(a, b) => int(a / b)
+def i_//(a, b) => math:int(a / b)
 def i_if(=> expr, cond) => expr ; cond
 (def i_else(expr, => fall)
     => fall ; isNaN(expr)
@@ -34,7 +35,10 @@ def i_if(=> expr, cond) => expr ; cond
     => true ; b
     => false ; rest
 )
-def i_&(a, b) => !(!a | !b)
+(def i_&(a, b)
+    => bool(b) ; a
+    => bool(a) ; rest
+)
 (def i_^(a, b)
     => !b ; a
     => !a ; rest

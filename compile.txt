@@ -21,3 +21,5 @@ src/kvverti/lavender/runtime/Interpreter.java
 src/kvverti/lavender/runtime/Parser.java
 src/kvverti/lavender/runtime/Token.java
 src/kvverti/lavender/runtime/Tokens.java
+stdlib/LMath.java
+stdlib/Vector.java

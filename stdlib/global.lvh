@@ -2,7 +2,6 @@
 
 @forward NaN()
 @forward isNaN(x)
-@forward Inf()
 @forward true()
 @forward false()
 @forward rest()
