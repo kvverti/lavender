@@ -12,19 +12,17 @@ public class Main {
         for(int i = 0; i < args.length; i++) {
             if(args[i].equals("-debug")) {
                 runargs.setDebug(true);
-                System.out.println("Running in debug mode");
             } else if(args[i].equals("-fp")) {
                 i++;
                 runargs.setFilepath(args[i]);
-            } else {
+            } else if(args[i].startsWith("-")) {
                 System.err.println("Argument not recognized: " + args[i]);
                 System.exit(1);
+            } else {
+                runargs.setMainFile(args[i]);
             }
         }
         Lavender rt = new Lavender(runargs);
-        System.out.println("Lavender runtime v. 1.1 by Chris Nero");
-        System.out.println("Open source at https://github.com/kvverti/lavender");
-        System.out.println("Enter function definitions or expressions");
         rt.start();
     }   
 }

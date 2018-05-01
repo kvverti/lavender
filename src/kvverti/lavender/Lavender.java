@@ -25,6 +25,7 @@ public class Lavender extends Thread {
     
     private final boolean debug;
     private final String filepath;
+    private final String mainFile;
     private final Map<String, Operator> functions;
     private final Map<String, Operator> operators;
     private final Interpreter intr;
@@ -33,6 +34,8 @@ public class Lavender extends Thread {
         
         private boolean debug = false;
         private String filepath = ".";
+        private String mainFile = null;
+        //private String[] runArgs = null;
         
         public Args() { }
         
@@ -43,6 +46,10 @@ public class Lavender extends Thread {
         public String filepath() { return filepath; }
         
         public void setFilepath(String fp) { filepath = fp; }
+        
+        public String mainFile() { return mainFile; }
+        
+        public void setMainFile(String mf) { mainFile = mf; }
     }
     
     public static Lavender getRuntime() {
@@ -56,6 +63,7 @@ public class Lavender extends Thread {
         super("LAVENDER-RUNTIME");
         debug = args.debug();
         filepath = args.filepath();
+        mainFile = args.mainFile();
         functions = new HashMap<>();
         operators = new HashMap<>();
         intr = new Interpreter(this);
@@ -191,10 +199,33 @@ public class Lavender extends Thread {
     @Override
     public void run() {
         
-        while(true) {
-            String res = intr.repl(System.in);
-            if(!res.isEmpty())
+        if(mainFile == null) {
+            //repl
+            if(debug)
+                System.out.println("Running in debug mode");
+            System.out.println("Lavender runtime v. 1.1 by Chris Nero");
+            System.out.println("Open source at https://github.com/kvverti/lavender");
+            System.out.println("Enter function definitions or expressions");
+            while(true) {
+                String res = intr.repl(System.in);
+                if(!res.isEmpty())
+                    System.out.println(res);
+            }
+        } else {
+            File f = new File(mainFile);
+            try(InputStream input = new FileInputStream(f)) {
+                intr.parseInput(input);
+                link();
+                Operator main = getPrefixFunction("global:main");
+                String res = intr.evaluate(main).toString();
                 System.out.println(res);
+            } catch(IOException e) {
+                System.err.println("Could not open main file");
+                System.exit(1);
+            } catch(RuntimeException e) {
+                System.err.println(e);
+                System.exit(1);
+            }
         }
     }
 }
