@@ -33,28 +33,24 @@
                 <th>Description</th>
             </tr>
             <tr>
-                <td><code>@namespace <i>[namespace]</i></code></td>
-                <td>Changes the current namespace to the namespace given. Namespaces must be alphanumeric. If the argument is not specified, the current namespace is echoed to the console.</td>
-            </tr>
-            <tr>
                 <td><code>@import <i>&lt;file&gt;</i></code></td>
-                <td>Evaluates the contents of the specified file. The file location is relative to the filepath specified with the <code>-fp</code> command line option.</td>
+                <td>Evaluates the contents of the specified file. The file location is first checked relative to the filepath specified with the <code>-fp</code> command line option, and then to the working directory.</td>
             </tr>
             <tr>
                 <td><code>@using <i>&lt;name&gt;</i></code></td>
-                <td>If the name is a qualified name, makes that name visible in the current namespace, else the name is treated as a namespace and all names in that namespace are made visible in the current nanespace. Using commands are reset when the namespace is changed.</td>
+                <td>If the name is a qualified name, makes that name visible in the current namespace, else the name is treated as a namespace and all names in that namespace are made visible in the current namespace.</td>
             </tr>
             <tr>
                 <td><code>@forward <i>&lt;func-decl&gt;</i></code></td>
-                <td>Forward declares the given function. The function's name may be used from this point on as if the function had been defined (however evaluating such expressions is an error). The actual definition of the function must have the same function heading, including number of parameters and passing conventions.</td>
+                <td><strong>(Java only).</strong> Forward declares the given function. The function's name may be used from this point on as if the function had been defined (however evaluating such expressions is an error). The actual definition of the function must have the same function heading, including number of parameters and passing conventions.</td>
             </tr>
             <tr>
                 <td><code>@resolve <i>[files...]</i></code></td>
-                <td>Evaluates the given files and links all imported files. Linking replaces uses of forward declarations of functions with the actual function. It is an error if not all functions have been defined at the point this command is executed.</td>
+                <td><strong>(Java only).</strong> Evaluates the given files and links all imported files. Linking replaces uses of forward declarations of functions with the actual function. It is an error if not all functions have been defined at the point this command is executed.</td>
             </tr>
             <tr>
                 <td><code>@library <i>&lt;lib&gt;</i></code></td>
-                <td>Loads the functions in the given library. The library in this runtime is a Java class file on the classpath, which includes the Lavender filepath.</td>
+                <td><strong>(Java only).</strong> Loads the functions in the given library. The library in this runtime is a Java class file on the classpath, which includes the Lavender filepath.</td>
             </tr>
             <tr>
                 <td><code>@delete <i>&lt;qual-name&gt;</i></code></td>

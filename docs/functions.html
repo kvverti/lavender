@@ -27,16 +27,14 @@
             If a function takes parameters, it may be either prefix or infix. When calling a function, prefix functions are always placed before their parameters, while infix functions are placed after their first parameter. To make a function infix, start its name with <code>i_</code>. Functions are prefix by default, but this can be specified explicitly by using the prefix <code>u_</code>. These prefixes are not part of the function name.
             <pre class="code">
 &gt; def plus(x, y) => x + y        ' Same as: def u_plus(x, y) => x + y
-global:plus
+repl:plus
 &gt; def i_minus(x, y) => x - y
-global:minus
+repl:minus
 &gt; plus(3, 2)
 5.0
 &gt; 5 minus 3
-2.0
-&gt; (5, 3) minus
 2.0</pre>
-            Note that infix functions do not need to be placed directly after their first parameter, though it is customary to do so. Prefix and infix functions may also be overloaded (<code>func</code> and <code>i_func</code> are different functions), but this practice is discouraged.
+            Note that infix functions must be placed directly after their first parameter. Prefix and infix functions may also be overloaded (<code>func</code> and <code>i_func</code> are different functions), but this practice is discouraged.
         </p>
         <p>
             Infix functions additionally may be either left or right associative. For example, multiplication is left associative while exponentiation is right associative.
@@ -61,16 +59,16 @@ global:minus
             <li><code>&amp;</code></li>
             <li><code>^</code></li>
             <li><code>|</code></li>
-            <li><code>All letters</code></li>
+            <li><code>All letters and _</code></li>
         </ul>
         <h2>Function Values</h2>
         <p>
             A function value is made by prefixing a function name (either qualified or unqualified) with the backslash character. Infix functions additionally are postfixed by the backslash character. Function values denote the function itself, which enables functions to be treated as values.
             <span class="code">
                 &gt; def f(x, y) => x + y<br/>
-                global:f<br/>
+                repl:f<br/>
                 &gt; \f<br/>
-                global:f<br/>
+                repl:f<br/>
                 &gt; def g() => 42<br/>
                 42.0<br/>
                 &gt; \g<br/>
@@ -83,13 +81,13 @@ global:minus
             Functions may be nested in other expressions. In addition to their own parameters, nested functions capture any paremeters declared in enclosing functions. Functions defined inside other functions are only accessible within the outer function, whereas "top-level" functions may be accessed anywhere.
             <pre class="code">
 &gt; def f1(x) => x + 1                         ' Define function f1
-global:f1
+repl:f1
 &gt; f1(12)                                     ' Call f1
 13.0
 &gt; def f2(x) => (def inner(i) => x + i)       ' Define f2 with a nested function inner
-global:f2
+repl:f2
 &gt; f2(2)
-global$f2:inner[2.0]                         ' Returns the inner function
+repl:f2:inner[2.0]                         ' Returns the inner function
 &gt; inner(3)
 Unqualified name not found: inner            ' Nested function not accessible</pre>
         </p>
@@ -98,9 +96,9 @@ Unqualified name not found: inner            ' Nested function not accessible</p
             Sometimes it may be necessary to use a value as a function. Often the value in question is the result of another function, or a parameter to a function. Square bracket notation allows one to use values as functions.
             <pre class="code">
 &gt; def f(x) => (def(i) => x + i)
-global:f
+repl:f
 &gt; f(1)                       ' Returns the nested function
-global$f:anon$1[1.0]
+repl:f:[1.0]
 &gt; [f(1)](2)                  ' Square bracket notation
 3.0</pre>
             Some real-world examples are the standard library map and reduce functions. These functions are known as <em>forwarding functions</em>. They exist only to forward their arguments.
@@ -127,19 +125,19 @@ global$f:anon$1[1.0]
     =&gt; 0 ; x = 0
     =&gt; -1 ; x &lt; 0
 )</pre>
-            The first body, as given in the source code, for which the condition expression returns nonzero (true) is executed. However, the runtime may choose to evaluate conditions in a different order than given in the source code. If no condition is satisfied, the function returns the floating-point NaN value.
+            The first body, as given in the source code, for which the condition expression returns nonzero (true) is executed. However, the runtime may choose to evaluate conditions in a different order than given in the source code. If no condition is satisfied, the function returns the value <code>sys:undefined</code>.
             <pre class="code">
 &gt; (def fact(n)          ' Factorial function
 &gt;    =&gt; 1 ; n = 0
 &gt;    =&gt; n * fact(n - 1) ; n &gt; 0
 &gt; )
-global:fact
+repl:fact
 &gt; fact(0)
 1.0
 &gt; fact(3)
 6.0
 &gt; fact(-2)
-NaN</pre>
+undefined</pre>
             When defining nested functions, piecewise function bodies bind to the innermost function, unless the inner function is explicitly closed with parentheses.
             <pre class="code">
 def f(x) =&gt; def(y) =&gt; y ; x &gt; y    ' Inner function is piecewise

@@ -8,23 +8,31 @@
 <body>
     <iframe id="header-frame" src="header.html"></iframe>
     <div id="content">
-        <h1>Lavender</h1>
         <p>
+            <strong>Note: Lavender (specifically CLavender) is in active developement. This site is updated relatively frequently with the latest Lavender features. Depending on how often you visit this site, you may need to clear your browser's cache in order to see the latest changes.</strong>
+        <p>
+        <h1>Lavender</h1>
             Lavender is an interpreted, pure functional REPL-based programming language.
         </p>
         <h2>Running Lavender</h2>
         <p>
-            Running Lavender requires Java to be installed. The following command will compile the Lavender runtime on your machine.
-            <span class="code">$ javac @compile.txt</span>
-            After compiling, you can run Lavender right away. A default shell file is provided that runs Lavender with simple default arguments. You should see something like the following.
+            Running Lavender requires a comforming C compiler. The following command will compile the Lavender runtime on your machine. If you use a compiler distribution other than GCC, change <code>CC</code> in the <code>Makefile</code> to your preferred compiler.
+            <span class="code">$ make</span>
+            The <code>Makefile</code> has two modes, <code>release</code> and <code>debug</code>. Debug mode compiles Lavender with debugging information and assertions enabled, and is meant to aid in debugging the runtime itself. Release mode is the default.
+        </p>
+        <p>
+            After compiling, you can run Lavender right away. You should see something like the following.
             <span class="code">
-                $ ./basic_start.sh<br/>
+                $ ./lavender<br/>
                 Lavender runtime v. 1.0 by Chris Nero<br/>
-                Open source at https://github.com/kvverti/lavender<br/>
+                Open source at https://github.com/kvverti/clavender<br/>
                 Enter function definitions or expressions<br/>
                 &gt;
             </span>
-            The Lavender runtime can also take command line arguments. There are two command line arguments.
+            In addition to REPL mode, if a file name (without the <code>.lv</code> extension) is specified, that file is parsed and its <code>main</code> function evaluated. Any arguments specified after the main file are passed to the <code>main</code> function.
+        </p>
+        <p>
+            The Lavender runtime can also take command line arguments. There are several command line arguments.
         </p>
         <table>
             <tr>
@@ -35,13 +43,11 @@
                 <td><code>-debug</code></td>
                 <td>Runs Lavender in debug mode. In debug mode, extra information from the interpreter is printed to the output.</td>
             </tr>
+            <tr>
+                <td><code>-maxStackSize &lt;size&gt;</code></td>
+                <td>(NYI) Specifies the maximum Lavender stack size in bytes. The Lavender stack holds function call information and function parameters. If the maximum stack size is exceeded, the current computation is aborted.</td>
+            </tr>
         </table>
-        <p>
-            For example, <code>basic_start.sh</code> is equivalent to running the following.
-            <span class="code">
-                $ java -cp classes:stdlib Main -fp stdlib
-            </span>
-        </p>
     </div>
     <iframe id="footer-frame" src="footer.html"></iframe>
 </body>

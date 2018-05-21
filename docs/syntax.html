@@ -15,7 +15,7 @@
                 3 + 5<br/>
                 "Hello world"<br/>
                 def(x) => x + 1<br/>
-                sin(2 * pi)
+                math:sin(2 * math:pi)
             </span>
         </p>
         <h2>Comments</h2>
@@ -24,7 +24,7 @@
         </p>
         <h2>Literals</h2>
         <p>
-            Lavender contains two types of literal values: numbers and strings. Numbers are double precision floating point values, and strings are Unicode character sequences. Strings are always delimited by double quote marks. Strings may contain escape sequences beginning with the backslash character.
+            Lavender contains two types of literal values: numbers and strings. Numbers are double precision floating point values, and strings are ASCII character sequences. Strings are always delimited by double quote marks. Strings may contain escape sequences beginning with the backslash character.
         </p>
         <table>
             <tr>
@@ -54,7 +54,7 @@
         </table>
         <h2>Names</h2>
         <p>
-            Names may refer to functions, namespaces, or function parameters. Within the function body, function parameter names shadow other names. Names may be either alphanumeric or symbolic. Alphanumeric names begin with a letter or underscore followed by zero or more letters or numbers. Symbolic names are made up of the following symbols: <code>? ~ * / % + - &lt; &gt; = ! &amp; ^ | :</code>, but may not begin with a colon. Additionally, names may not be either of the two keywords <code>def</code> or <code>=&gt;</code>. Parameter and namespace names may only be alphanumeric.
+            Names may refer to functions or function parameters. Within a function body, function parameter names shadow other names. Names may be either alphanumeric or symbolic. Alphanumeric names begin with a letter or underscore followed by zero or more letters, underscores, or numbers. Symbolic names are made up of the following symbols: <code>? ~ * / % + - &lt; &gt; = ! &amp; ^ | :</code>. Additionally, names may not be either of the two keywords <code>def</code> or <code>=&gt;</code>. Parameter and namespace names may only be alphanumeric.
         </p>
         <table>
             <tr>
@@ -63,7 +63,7 @@
             </tr>
             <tr>
                 <td><code>hello_world</code></td>
-                <td><code>::</code></td>
+                <td><code>_:</code></td>
             </tr>
             <tr>
                 <td><code>Lavender</code></td>
@@ -74,7 +74,7 @@
                 <td><code>def</code></td>
             </tr>
             <tr>
-                <td><code>&lt;::</code></td>
+                <td><code>::</code></td>
                 <td><code>bar_=</code></td>
             </tr>
         </table>
@@ -88,13 +88,13 @@
         </p>
         <h3>Name Resolution</h3>
         <p>
-            When an unqualified name is found in a statically bound position, the interpreter attempts to resolve it using the following rules. If the name is the same as a parameter name in the same function, then the name refers to the parameter. Parameters in enclosing functions are next, then functions in the enclosing namespace. Finally, functions in the global and builtin namespaces are checked.
+            When an unqualified name is found, the interpreter attempts to resolve it using the following rules. If the name is the same as a parameter name in the same function, then the name refers to the parameter. Parameters in enclosing functions are next, then functions in the enclosing namespace. Finally, functions in the global and builtin namespaces are checked.
         </p>
         <h2>Function Calls</h2>
         <p>
-            Every expression in Lavender that is not a literal value or function definition is a function call. For example, <code>sin(pi)</code> and <code>3 * 2</code> are both function calls with the <code>\:sin</code> and <code>\:*\</code> functions, respectively. Function calls are made up of the function name and an argument list. The function name is placed before the argument list in the case of a prefix function, and inside the argument list in the case of an infix function. Multiple arguments are separated by commas and enclosed in parentheses. Examples below.
+            Every expression in Lavender that is not a literal value or function definition is a function call. For example, <code>sin(pi)</code> and <code>3 * 2</code> are both function calls with the <code>\math:sin</code> and <code>\global:*\</code> functions, respectively. Function calls are made up of the function name and an argument list. The function name is placed before the argument list in the case of a prefix function, and inside the argument list in the case of an infix function. Multiple arguments are separated by commas and enclosed in parentheses. Examples below.
             <pre class="code">
-&gt; abs(2)         ' Calling \:abs with argument 2.0
+&gt; abs(2)         ' Calling \math:abs with argument 2.0
 2.0
 &gt; abs 2          ' Parens are optional with a single argument
 2.0
@@ -102,7 +102,7 @@
 3.0
 &gt; max 1, 3       ' Parens are required with multiple arguments
 Invalid stack
-&gt; -3             ' Actually calls \:-
+&gt; -3             ' Actually calls \global:-
 -3.0
 &gt; -(3)           ' Equiv with parens
 -3.0</pre>
