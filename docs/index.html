@@ -34,7 +34,11 @@
         <p>
             The Lavender runtime can also take command line arguments. There are several command line arguments.
         </p>
-        <table>
+        <table class="exp-table">
+            <tr>
+                <th>Option Format</th>
+                <th>Description</th>
+            </tr>
             <tr>
                 <td><code>-fp &lt;filepath&gt;</code></td>
                 <td>Specifies the directory where Lavender source files may be found.</td>
@@ -45,7 +49,7 @@
             </tr>
             <tr>
                 <td><code>-maxStackSize &lt;size&gt;</code></td>
-                <td>(NYI) Specifies the maximum Lavender stack size in bytes. The Lavender stack holds function call information and function parameters. If the maximum stack size is exceeded, the current computation is aborted.</td>
+                <td>Specifies the maximum Lavender stack size in bytes. The Lavender stack holds function call information and function parameters. If the maximum stack size is exceeded, the Lavender runtime exits. The size is an unsigned integer optionally specified with a unit, one of K (kibibyte), M (mebibyte), or G (gibibyte). If no unit is specified, the size is in bytes.</td>
             </tr>
         </table>
     </div>

@@ -44,3 +44,11 @@ body {
 code {
     font-family: monospace;
 }
+
+.exp-table td:nth-child(odd) {
+    width: 30%;
+}
+
+.exp-table td:nth-child(even) {
+    width: 70%;
+}
