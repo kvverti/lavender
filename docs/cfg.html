@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>Lavender Documentation</title>
+    <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+    <iframe id="header-frame" src="header.html"></iframe>
+    <div id="content">
+        <h1>Lavender Context-Free Grammar</h1>
+        <p>
+            Lavender's grammar is incredibly context-sensitive due to the ability to define arbitrary prefix and infix operators. However, the context-free grammar is presented here. Tokens may be separated by any amount of whitespace and comments.
+        </p>
+        <pre class="code">
+<i>Module:</i> <i>&lt;ModuleElement&gt;</i> <i>[</i>\n <i>&lt;Module&gt;]</i>
+<i>ModuleElement:</i> <i>&lt;Command&gt; | &lt;FunctionDef&gt;</i>
+
+<i>Command:</i> @ <i>&lt;Name&gt; [Rest of Line]</i>
+<i>FunctionDef:</i> ( <i>&lt;Function&gt;</i> ) <i>| &lt;Function&gt;</i>
+
+<i>Function:</i> def <i>[FuncName]</i> ( <i>[Params]</i> ) <i>&lt;Funcbody&gt;</i>
+<i>FuncName:</i> <i>&lt;Identifier&gt; | {</i>uir<i>}</i>_<i>&lt;Symbol&gt;</i>
+<i>Params:</i> <i>[</i>=><i>] [</i>...<i>] &lt;Name&gt; | [</i>=><i>] &lt;Name&gt; [</i>, <i>&lt;Params&gt;]</i>
+<i>Funcbody:</i> =&gt; <i>&lt;Expression&gt; | &lt;Piecewise&gt; [Piecewise...]</i>
+<i>Piecewise:</i> =&gt; <i>&lt;ExpressionNoFunc&gt;</i> ; <i>&lt;ExpressionNoFunc&gt;</i>
+
+<i>Expression:</i> <i>&lt;ExpressionNoFunc&gt; | &lt;Function&gt; </i>
+<i>ExpressionNoFunc:</i> <i>&lt;ExprElement&gt; [ExprElement...]</i>
+<i>ExprElement:</i> <i>&lt;Operand&gt; [&lt;Operator&gt;]</i>
+<i>Operand:</i> ( <i>&lt;Expression&gt; </i>)<i> | &lt;ValueCall&gt; | &lt;FunctionCall&gt; | &lt;QualIdentifier&gt; | &lt;Primary&gt;</i>
+<i>Operator:</i> <i>&lt;QualIdentifier&gt;</i>
+
+<i>ValueCall:</i> [ <i>&lt;Expression&gt;</i> ] <i>&lt;ArgList&gt;</i>
+<i>FunctionCall:</i> <i>&lt;QualIdentifier&gt &lt;ArgList&gt;</i>
+<i>ArgList:</i> () <i>|</i> ( <i>&lt;ArgListElements&gt;</i> )
+<i>ArgListElements:</i> <i>&lt;Expression&gt; [</i>, <i>&lt;ArgListElements&gt;]</i>
+
+<i>QualIdentifier:</i> <i>[&lt;Name&gt;</i> : <i>] &lt;Identifier&gt;</i>
+<i>Identifier:</i> <i>&lt;Name&gt; | &lt;Symbol&gt;</i>
+
+<i>Name:</i> <i>&lt;Letter&gt; [LetterOrDigit...]</i>
+<i>LetterOrDigit:</i> <i>&lt;Letter&gt; | &lt;Digit&gt;</i>
+<i>Letter:</i> <i>ONE OF</i> A-Z a-z _
+<i>Digit:</i> <i>ONE OF</i> 0-9
+<i>Symbol:</i> <i>&lt;SymbolPart&gt; [SymbolPart...]</i>
+<i>SymbolPart:</i> <i>ONE OF</i> ~ ? * / % : + - &amp; | ^ = ! &lt; &gt;
+
+<i>Primary:</i> <i>&lt;Number&gt; | &lt;String&gt; | &lt;FuncValue&gt;</i>
+<i>Number:</i> <i>IEEE FLoating-Point Literal</i>
+<i>String:</i> " <i>[Not " or newline, escape \", \', \n, \t, \\]</i> "
+<i>FuncValue:</i> \ <i>&lt;QualIdentifier&gt; [</i>\<i>]</i></pre>
+    </div>
+    <iframe id="footer-frame" src="footer.html"></iframe>
+</body>
+</html>
