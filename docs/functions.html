@@ -116,6 +116,13 @@ repl:f:[1.0]
             </span>
             When calling a value as a function, the passing conventions of the underlying function are respected.
         </p>
+        <h2>Varargs Functions</h2>
+        <p>
+            <span class="code">
+                def Vect(...a) => a ' Make a vector
+            </span>
+            Functions may be defined as taking a variable number of arguments by adding the ellipsis token (<code>...</code>) before the last parameter. The extra arguments are boxed into a Lavender <code>vect</code>. Square bracket syntax respects varargs functions. Note that passing a single <code>vect</code> as the varargs parameter will still result in boxing.
+        </p>
         <h2>Piecewise Functions</h2>
         <p>
             When defining a function, it may either have one body or more than one body. Functions with more than one body are called piecewise functions. Piecewise functions are written as a sequence of function bodies, each composed of a result expression and a condition expression separated by a semicolon.
