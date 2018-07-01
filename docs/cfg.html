@@ -10,7 +10,7 @@
     <div id="content">
         <h1>Lavender Context-Free Grammar</h1>
         <p>
-            Lavender's grammar is incredibly context-sensitive due to the ability to define arbitrary prefix and infix operators. However, the context-free grammar is presented here. Tokens may be separated by any amount of whitespace and comments.
+            Lavender's grammar is incredibly context-sensitive due to the ability to define arbitrary prefix and infix operators. However, the context-free grammar is presented here. Tokens may be separated by any amount of whitespace and comments. Note that Lavender's context-free grammar is inherently ambiguous in a way that cannot be resolved without global context. Because of this, the CLavender implementation does not actually use this grammar in any parsing step; it uses context-sensitive parsing instead.
         </p>
         <pre class="code">
 <i>Module:</i> <i>&lt;ModuleElement&gt;</i> <i>[</i>\n <i>&lt;Module&gt;]</i>
@@ -26,14 +26,13 @@
 <i>Piecewise:</i> =&gt; <i>&lt;ExpressionNoFunc&gt;</i> ; <i>&lt;ExpressionNoFunc&gt;</i>
 
 <i>Expression:</i> <i>&lt;ExpressionNoFunc&gt; | &lt;Function&gt; </i>
-<i>ExpressionNoFunc:</i> <i>&lt;ExprElement&gt; [ExprElement...]</i>
-<i>ExprElement:</i> <i>&lt;Operand&gt; [&lt;Operator&gt;]</i>
+<i>ExpressionNoFunc:</i> <i>&lt;Operand&gt; [&lt;Operator&gt; [Expression]]</i>
 <i>Operand:</i> ( <i>&lt;Expression&gt; </i>)<i> | &lt;ValueCall&gt; | &lt;FunctionCall&gt; | &lt;QualIdentifier&gt; | &lt;Primary&gt;</i>
-<i>Operator:</i> <i>&lt;QualIdentifier&gt;</i>
+<i>Operator:</i> <i>&lt;QualIdentifier&gt; [QualIdentifier...]</i>
 
 <i>ValueCall:</i> [ <i>&lt;Expression&gt;</i> ] <i>&lt;ArgList&gt;</i>
 <i>FunctionCall:</i> <i>&lt;QualIdentifier&gt &lt;ArgList&gt;</i>
-<i>ArgList:</i> () <i>|</i> ( <i>&lt;ArgListElements&gt;</i> )
+<i>ArgList:</i> () <i>| &lt;Operand&gt; |</i> ( <i>&lt;ArgListElements&gt;</i> )
 <i>ArgListElements:</i> <i>&lt;Expression&gt; [</i>, <i>&lt;ArgListElements&gt;]</i>
 
 <i>QualIdentifier:</i> <i>[&lt;Name&gt;</i> : <i>] &lt;Identifier&gt;</i>
