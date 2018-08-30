@@ -24,7 +24,7 @@
         </p>
         <h2>Literals</h2>
         <p>
-            Lavender contains two types of literal values: numbers and strings. Numbers are double precision floating point values, and strings are ASCII character sequences. Strings are always delimited by double quote marks. Strings may contain escape sequences beginning with the backslash character.
+            Lavender contains three types of literal values: numbers, strings, and vects. Numbers are double precision floating point values, strings are ASCII character sequences, and vects are sequences of values delimited with curly braces (<code>{ }</code>). Strings are always delimited by double quote marks. Strings may contain escape sequences beginning with the backslash character.
         </p>
         <table>
             <tr>
@@ -54,7 +54,7 @@
         </table>
         <h2>Names</h2>
         <p>
-            Names may refer to functions or function parameters. Within a function body, function parameter names shadow other names. Names may be either alphanumeric or symbolic. Alphanumeric names begin with a letter or underscore followed by zero or more letters, underscores, or numbers. Symbolic names are made up of the following symbols: <code>? ~ * / % + - &lt; &gt; = ! &amp; ^ | :</code>. Additionally, names may not be either of the two keywords <code>def</code> or <code>=&gt;</code>. Parameter and namespace names may only be alphanumeric.
+            Names may refer to functions or function parameters. Within a function body, function parameter names shadow other names. Names may be either alphanumeric or symbolic. Alphanumeric names begin with a letter or underscore followed by zero or more letters, underscores, or numbers. Symbolic names are made up of the following symbols: <code>? ~ * / % + - &lt; &gt; = ! &amp; ^ | :</code>. Additionally, names may not be any of the three keywords <code>def</code>, <code>let</code>, or <code>=&gt;</code>. Parameter and namespace names may only be alphanumeric.
         </p>
         <table>
             <tr>

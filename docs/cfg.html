@@ -19,19 +19,21 @@
 <i>Command:</i> @ <i>&lt;Name&gt; [Rest of Line]</i>
 <i>FunctionDef:</i> ( <i>&lt;Function&gt;</i> ) <i>| &lt;Function&gt;</i>
 
-<i>Function:</i> def <i>[FuncName]</i> ( <i>[Params]</i> ) <i>&lt;Funcbody&gt;</i>
+<i>Function:</i> def <i>[FuncName]</i> ( <i>[Params]</i> ) <i>[</i>let <i>&lt;Locals&gt;]</i> <i>&lt;Funcbody&gt;</i>
 <i>FuncName:</i> <i>&lt;Identifier&gt; | {</i>uir<i>}</i>_<i>&lt;Symbol&gt;</i>
-<i>Params:</i> <i>[</i>=><i>] [</i>...<i>] &lt;Name&gt; | [</i>=><i>] &lt;Name&gt; [</i>, <i>&lt;Params&gt;]</i>
+<i>Params:</i> <i>[</i>=&gt;<i>] [</i>...<i>] &lt;Name&gt; | [</i>=&gt;<i>] &lt;Name&gt; [</i>, <i>&lt;Params&gt;]</i>
+<i>Locals:</i> <i>&lt;Name&gt;</i> ( <i>&lt;Expression&gt;</i> ) <i>[</i>, <i>&lt;Locals&gt;]</i>
 <i>Funcbody:</i> =&gt; <i>&lt;Expression&gt; | &lt;Piecewise&gt; [Piecewise...]</i>
 <i>Piecewise:</i> =&gt; <i>&lt;ExpressionNoFunc&gt;</i> ; <i>&lt;ExpressionNoFunc&gt;</i>
 
 <i>Expression:</i> <i>&lt;ExpressionNoFunc&gt; | &lt;Function&gt; </i>
 <i>ExpressionNoFunc:</i> <i>&lt;Operand&gt; [&lt;Operator&gt; [Expression]]</i>
-<i>Operand:</i> ( <i>&lt;Expression&gt; </i>)<i> | &lt;ValueCall&gt; | &lt;FunctionCall&gt; | &lt;QualIdentifier&gt; | &lt;Primary&gt;</i>
+<i>Operand:</i> ( <i>&lt;Expression&gt; </i>)<i> | &lt;ValueCall&gt; | &lt;FunctionCall&gt; | &lt;Vect&gt; | &lt;QualIdentifier&gt; | &lt;Primary&gt;</i>
 <i>Operator:</i> <i>&lt;QualIdentifier&gt; [QualIdentifier...]</i>
 
 <i>ValueCall:</i> [ <i>&lt;Expression&gt;</i> ] <i>&lt;ArgList&gt;</i>
 <i>FunctionCall:</i> <i>&lt;QualIdentifier&gt &lt;ArgList&gt;</i>
+<i>Vect:</i> { <i>[ArgListElements]</i> }
 <i>ArgList:</i> () <i>| &lt;Operand&gt; |</i> ( <i>&lt;ArgListElements&gt;</i> )
 <i>ArgListElements:</i> <i>&lt;Expression&gt; [</i>, <i>&lt;ArgListElements&gt;]</i>
 

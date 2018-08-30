@@ -12,12 +12,12 @@
         <p>
             Function expressions define functions. Functions are defined using the following syntax.
             <span class="code">
-                def <i>[name]</i> ( <i>[params]</i> ) =&gt; <i>&lt;expression&gt;</i>
+                def <i>[name]</i> ( <i>[params]</i> ) <i>[locals]</i> =&gt; <i>&lt;expression&gt;</i>
             </span>
             A function's name is optional. If left out, the function is an anonymous function. The function's parameter list may contain zero or more parameters spearated by commas. As Lavender is untyped, the parameters are given names only. Some examples of function definitions below.
             <span class="code">
                 def Inf() => 1 / 0<br/>
-                def true() => 1<br/>
+                def BoolVals() => { True, False, FileNotFound }<br/>
                 def log2(x) => log(x) / log(2)<br/>
                 def isTrue(x) => x = true
             </span>
@@ -78,7 +78,7 @@ repl:minus
         </p>
         <h2>Nested Functions</h2>
         <p>
-            Functions may be nested in other expressions. In addition to their own parameters, nested functions capture any paremeters declared in enclosing functions. Functions defined inside other functions are only accessible within the outer function, whereas "top-level" functions may be accessed anywhere.
+            Functions may be nested in other expressions. In addition to their own parameters, nested functions capture any parameters declared in enclosing functions. Functions defined inside other functions are only accessible within the outer function, whereas "top-level" functions may be accessed anywhere.
             <pre class="code">
 &gt; def f1(x) => x + 1                         ' Define function f1
 repl:f1
@@ -107,6 +107,23 @@ repl:f:[1.0]
                 def i_reduce(obj, identity, func) => [[obj](\reduce\)](identity, func)
             </span>
         </p>
+        <p>
+            In newer versions of Lavender, you can also use parenthesis notation to call values as functions. Rewritten to use parenthesis notation, the above example would look like this.
+            <span class="code">
+            &gt; f(1)(2)<br/>
+            3.0
+            </span>
+            Parenthesis notation is generally preferred to square bracket notation, as it looks more like a regular function call. However, there are two critical differences between parenthesis notation and function calls. First, the parentheses in parenthetical notation are required, whereas they are optional for regular function calls. Second, prefix functions have precedence over parenthetical notation. This allows for natural interop with alphanumeric functions, but may be unintuitive for symbolic functions.
+            <pre class="code">
+&gt; def f(x) => "hello"(x)
+repl:f
+&gt; !f(1) = !("hello"(1))
+1.0
+&gt; !"hello"(1) = (!("hello"))(1)
+1.0
+&gt; f(1)(0) = (f(1))(0)
+1.0</pre>
+        </p>
         <h2>Argument Passing Conventions</h2>
         <p>
             In Lavender, arguments to functions may be passed by value, or passed by name. Pass-by-value evaluates the argument once before calling the function, while pass-by-name evaluates the argument each time it is used by the function. Passing conventions are defined by the function. By default, arguments are passed by value, but pass-by-name may be specified by using the <code>=&gt;</code> token before the parameter name.
@@ -121,7 +138,7 @@ repl:f:[1.0]
             <span class="code">
                 def Vect(...a) => a ' Make a vector
             </span>
-            Functions may be defined as taking a variable number of arguments by adding the ellipsis token (<code>...</code>) before the last parameter. The extra arguments are boxed into a Lavender <code>vect</code>. Square bracket syntax respects varargs functions. Note that passing a single <code>vect</code> as the varargs parameter will still result in boxing.
+            Functions may be defined as taking a variable number of arguments by adding the ellipsis token (<code>...</code>) before the last parameter. The extra arguments are boxed into a Lavender <code>vect</code>. Value calling syntax respects varargs functions. Note that passing a single <code>vect</code> as the varargs parameter will still result in boxing.
         </p>
         <h2>Piecewise Functions</h2>
         <p>
@@ -132,7 +149,7 @@ repl:f:[1.0]
     =&gt; 0 ; x = 0
     =&gt; -1 ; x &lt; 0
 )</pre>
-            The first body, as given in the source code, for which the condition expression returns nonzero (true) is executed. However, the runtime may choose to evaluate conditions in a different order than given in the source code. If no condition is satisfied, the function returns the value <code>sys:undefined</code>.
+            The first body, as given in the source code, for which the condition expression yields a truthy value is executed. However, the runtime may choose to evaluate conditions in a different order than given in the source code. If no condition is satisfied, the function returns the value <code>sys:undefined</code>.
             <pre class="code">
 &gt; (def fact(n)          ' Factorial function
 &gt;    =&gt; 1 ; n = 0
@@ -144,12 +161,12 @@ repl:fact
 &gt; fact(3)
 6.0
 &gt; fact(-2)
-undefined</pre>
+&lt;undefined&gt;</pre>
             When defining nested functions, piecewise function bodies bind to the innermost function, unless the inner function is explicitly closed with parentheses.
             <pre class="code">
 def f(x) =&gt; def(y) =&gt; y ; x &gt; y    ' Inner function is piecewise
 def f(x) =&gt; (def(y) =&gt; y ; x &gt; y)  ' Inner function is piecewise
-def f(x) =&gt; (def(y) =&gt; y) ; x &gt; y  ' Outer function is piecewise</pre>
+def f(x) =&gt; (def(y) =&gt; y) ; x &gt; y  ' Parse error. 'y' is not declared</pre>
         </p>
     </div>
     <iframe id="footer-frame" src="footer.html"></iframe>
